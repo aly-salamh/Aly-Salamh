@@ -1,0 +1,95 @@
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Grotesk:wght@300;400;500;600;700&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-display: "Bebas Neue", sans-serif;
+  --font-sans: "Space Grotesk", sans-serif;
+  
+  /* Primary Colors */
+  --color-brand-red: #F50537;
+  --color-brand-red-dark: #C00028;
+  --color-brand-amber: #FF7800;
+  --color-brand-gold: #F0C84A;
+  
+  /* Neutral Palette */
+  --color-brand-black: #000000;
+  --color-brand-black-90: #111111;
+  --color-brand-black-60: #333333;
+  --color-brand-black-40: #666666;
+  --color-brand-white: #FFFFFF;
+  --color-brand-white-98: #FAFAFA;
+  --color-brand-white-95: #F5F5F5;
+  
+  --shadow-editorial: 0 2px 12px rgba(0,0,0,0.06);
+}
+
+@layer base {
+  body {
+    @apply font-sans text-brand-black bg-brand-white;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-display uppercase tracking-wider;
+  }
+}
+
+@layer components {
+  .btn-primary {
+    @apply bg-brand-red text-brand-white px-6 py-3 font-bold text-[11px] leading-tight uppercase tracking-[0.1em] rounded-[4px] cursor-pointer transition-colors hover:bg-brand-red-dark;
+  }
+  
+  .btn-outline {
+    @apply bg-transparent text-brand-black border-[1.5px] border-brand-black px-6 py-3 font-bold text-[11px] leading-tight uppercase tracking-[0.1em] rounded-[4px] cursor-pointer transition-colors hover:bg-brand-black hover:text-brand-white;
+  }
+  
+  .btn-amber {
+    @apply bg-brand-amber text-brand-white px-6 py-3 font-bold text-[11px] leading-tight uppercase tracking-[0.1em] rounded-[4px] cursor-pointer transition-colors hover:bg-brand-amber/90;
+  }
+  
+  .btn-gold {
+    @apply bg-linear-to-br from-[#F0C84A] to-[#C9A63A] text-brand-black px-6 py-3 font-bold text-[11px] leading-tight uppercase tracking-[0.1em] rounded-[4px] cursor-pointer transition-colors hover:opacity-90;
+  }
+  
+  .tier-badge {
+    @apply text-[8px] font-bold tracking-[0.1em] uppercase px-[7px] py-[3px] rounded-[3px];
+  }
+  
+  .card-brand {
+    @apply bg-brand-white border-[1.5px] border-black/8 rounded-lg overflow-hidden cursor-pointer transition-all hover:-translate-y-0.5 hover:shadow-xl shadow-editorial;
+  }
+}
+
+.offers-ticker-scroll {
+  animation: scroll 40s linear infinite;
+}
+
+@keyframes scroll {
+  0% { transform: translateX(100%); }
+  100% { transform: translateX(-100%); }
+}
+
+@keyframes marquee {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+.animate-marquee {
+  animation: marquee 20s linear infinite;
+  display: inline-block;
+  white-space: nowrap;
+}
+
+/* Custom scrollbar for brand sidebar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: #00000010;
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #00000020;
+}
