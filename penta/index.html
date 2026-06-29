@@ -516,15 +516,21 @@ function renderStory(){
 /* ============================================================
    COUNT-UP util
    ============================================================ */
+const REDUCE = window.matchMedia('(prefers-reduced-motion:reduce)').matches;
+function fin(to,dec){ return dec ? (+to).toFixed(1) : String(Math.round(to)); }
 function countUp(el, to, dur, dec){
-  const start = performance.now();
+  if(REDUCE || !el){ if(el) el.textContent = fin(to,dec); return; }
+  let start = null;
   function step(now){
-    const k = Math.min(1,(now-start)/dur);
+    if(start===null) start=now;
+    let k = (now-start)/dur;
+    if(!(k>=0)) k=1;                 // guard against NaN / clock anomalies
+    k = Math.min(1,k);
     const e = 1-Math.pow(1-k,3);
-    const val = to*e;
-    el.textContent = dec ? val.toFixed(1) : Math.round(val);
-    if(k<1) requestAnimationFrame(step); else el.textContent = dec?(+to).toFixed(1):Math.round(to);
+    el.textContent = dec ? Math.max(0,to*e).toFixed(1) : String(Math.round(Math.max(0,to*e)));
+    if(k<1) requestAnimationFrame(step); else el.textContent = fin(to,dec);
   }
+  el.textContent = dec ? (0).toFixed(1) : '0';
   requestAnimationFrame(step);
 }
 
@@ -780,32 +786,39 @@ document.getElementById('tabs').addEventListener('click',e=>{
 /* ============================================================
    INIT + JETSON REVEAL
    ============================================================ */
+let revealed=false;
 function revealDashboard(){
+  if(revealed) return; revealed=true;
+  const ov=document.getElementById('reveal');
+  if(ov) ov.classList.add('gone');
   renderHero(); renderStory();
   countUp(document.getElementById('scoreBlue'), MATCH.score.BLUE, 900, false);
   countUp(document.getElementById('scoreYel'),  MATCH.score.YEL,  900, false);
   drawHeat(); // default tab
 }
 function init(){
-  const reduce = window.matchMedia('(prefers-reduced-motion:reduce)').matches;
   const ov=document.getElementById('reveal'), bar=document.getElementById('rvBar');
-  if(reduce){
-    ov.classList.add('gone'); revealDashboard();
-    document.getElementById('scoreBlue').textContent=MATCH.score.BLUE;
-    document.getElementById('scoreYel').textContent=MATCH.score.YEL;
-    return;
+  // Reduced motion: skip the reveal animation entirely.
+  if(REDUCE){ revealDashboard(); return; }
+  // Drive the progress bar with rAF (deterministic, never stalls like setInterval can).
+  const DUR=1500; let start=null;
+  function tick(now){
+    if(revealed) return;
+    if(start===null) start=now;
+    const k=Math.min(1,(now-start)/DUR);
+    if(bar) bar.style.width=(k*100).toFixed(1)+'%';
+    if(k<1) requestAnimationFrame(tick);
+    else setTimeout(revealDashboard, 200);
   }
-  let pct=0;
-  const t=setInterval(()=>{
-    pct=Math.min(100,pct+Math.max(4,(100-pct)*0.12));
-    bar.style.width=pct+'%';
-    if(pct>=99.5){
-      clearInterval(t);
-      setTimeout(()=>{ ov.classList.add('gone'); revealDashboard(); }, 250);
-    }
-  }, 90);
+  requestAnimationFrame(tick);
+  // Hard fallback: no matter what (throttled tab, rAF paused), never trap the user on the loader.
+  setTimeout(revealDashboard, 2600);
+  // Let an impatient user skip the intro by tapping/clicking it.
+  if(ov) ov.addEventListener('click', revealDashboard);
 }
-init();
+// Run after DOM is parsed (script is at end of body, but be safe).
+if(document.readyState==='loading') document.addEventListener('DOMContentLoaded', init);
+else init();
 </script>
 </body>
 </html>
