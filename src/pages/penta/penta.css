@@ -1,0 +1,276 @@
+/* ============================================================
+   penta — scoped styles. Every selector lives under .penta-root
+   so it never collides with the global fashion app styles.
+   ============================================================ */
+.penta-root{
+  --blue:#3b82f6; --yel:#f5b62a;
+  --blue-a:#1e5fd6; --blue-b:#4f93ff;
+  --yel-a:#ffc94d;  --yel-b:#f5a623;
+  --bg:#0e151f; --ink:#e8eef5; --sub:#8497ad; --mut:#7d8aa0;
+  --line:#223144; --line-hi:#33557a; --card-dk:#0d1620; --field:#0e1722;
+  --gold:#f5c451; --silver:#cfd8e3; --bronze:#d68a4f;
+  --gold-ink:#1a1205; --silver-ink:#10151c; --bronze-ink:#1a0f06;
+  --grid:#2a3a4f;
+  min-height:100vh;
+  background:var(--bg);
+  color:var(--ink);
+  font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+  -webkit-font-smoothing:antialiased;
+}
+.penta-root *{box-sizing:border-box}
+.penta-root .num{font-variant-numeric:tabular-nums}
+.penta-root .wrap{max-width:1140px;margin:0 auto;padding:0 18px}
+
+/* ---- top nav ---- */
+.penta-root .pnav{position:sticky;top:0;z-index:30;backdrop-filter:blur(12px);
+  background:rgba(14,21,31,.78);border-bottom:1px solid var(--line)}
+.penta-root .pnav-in{max-width:1140px;margin:0 auto;padding:13px 18px;display:flex;align-items:center;gap:14px}
+.penta-root .brand{display:flex;align-items:center;gap:9px;font-weight:800;letter-spacing:.4px}
+.penta-root .brand .mark{width:28px;height:28px;border-radius:9px;display:grid;place-items:center;
+  background:linear-gradient(135deg,var(--blue),var(--yel));color:#0b1019;font-weight:900;font-size:16px}
+.penta-root .brand small{color:var(--sub);font-weight:600;letter-spacing:1.4px;text-transform:uppercase;font-size:10px}
+.penta-root .pnav-links{margin-left:auto;display:flex;align-items:center;gap:22px}
+.penta-root .pnav-links a{color:var(--sub);font-size:13px;font-weight:600;text-decoration:none;cursor:pointer;transition:color .2s}
+.penta-root .pnav-links a:hover{color:var(--ink)}
+.penta-root .btn{display:inline-flex;align-items:center;gap:7px;cursor:pointer;border:0;border-radius:12px;
+  padding:10px 18px;font-size:13px;font-weight:700;color:#0b1019;
+  background:linear-gradient(135deg,var(--blue-b),var(--yel));transition:transform .15s,filter .2s;text-decoration:none}
+.penta-root .btn:hover{transform:translateY(-1px);filter:brightness(1.06)}
+.penta-root .btn.ghost{background:transparent;color:var(--ink);border:1px solid var(--line-hi)}
+@media (max-width:620px){.penta-root .pnav-links a{display:none}}
+
+/* ---- landing hero ---- */
+.penta-root .lhero{position:relative;overflow:hidden;padding:72px 0 60px}
+.penta-root .lhero .hb{position:absolute;width:460px;height:460px;border-radius:50%;filter:blur(70px);opacity:.18;pointer-events:none}
+.penta-root .lhero .hb1{background:var(--blue);top:-200px;left:-120px;animation:pdriftA 16s ease-in-out infinite}
+.penta-root .lhero .hb2{background:var(--yel);top:-120px;right:-140px;animation:pdriftB 18s ease-in-out infinite}
+.penta-root .lhero-in{position:relative;z-index:1;text-align:center}
+.penta-root .pill{display:inline-flex;align-items:center;gap:8px;font-size:11px;font-weight:700;letter-spacing:1.4px;
+  text-transform:uppercase;color:var(--sub);background:var(--card-dk);border:1px solid var(--line);border-radius:999px;padding:7px 14px}
+.penta-root .pill .live-dot{width:7px;height:7px;border-radius:50%;background:#36d399;box-shadow:0 0 0 3px rgba(54,211,153,.2)}
+.penta-root .lhero h1{font-size:58px;line-height:1.02;font-weight:800;letter-spacing:-.5px;margin:22px 0 0}
+.penta-root .lhero h1 .grad{background:linear-gradient(120deg,var(--blue-b),var(--yel));-webkit-background-clip:text;background-clip:text;color:transparent}
+.penta-root .lhero p.lead{max-width:620px;margin:18px auto 0;font-size:18px;line-height:1.6;color:var(--sub)}
+.penta-root .lhero .cta{margin-top:30px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+@media (max-width:620px){.penta-root .lhero h1{font-size:40px}.penta-root .lhero{padding:48px 0 40px}}
+
+/* ---- section frame ---- */
+.penta-root .sec{padding:54px 0}
+.penta-root .sec-h{text-align:center;margin-bottom:34px}
+.penta-root .sec-eyebrow{font-size:11px;font-weight:800;letter-spacing:1.8px;text-transform:uppercase;color:var(--blue-b)}
+.penta-root .sec-title{font-size:32px;font-weight:800;letter-spacing:-.3px;margin:8px 0 0}
+.penta-root .sec-sub{font-size:15px;color:var(--sub);margin:10px auto 0;max-width:560px}
+
+/* ---- how it works ---- */
+.penta-root .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.penta-root .step{position:relative;overflow:hidden;border-radius:18px;padding:24px 22px;
+  background:linear-gradient(180deg,#19232f,#131c27);border:1px solid rgba(255,255,255,.05)}
+.penta-root .step .n{width:34px;height:34px;border-radius:11px;display:grid;place-items:center;font-weight:900;
+  font-size:15px;color:#0b1019;background:linear-gradient(135deg,var(--blue-b),var(--yel))}
+.penta-root .step h3{margin:14px 0 6px;font-size:17px;font-weight:800}
+.penta-root .step p{margin:0;font-size:14px;line-height:1.55;color:var(--sub)}
+@media (max-width:760px){.penta-root .steps{grid-template-columns:1fr}}
+
+/* ---- features ---- */
+.penta-root .feats{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.penta-root .feat{border-radius:16px;padding:20px;background:var(--card-dk);border:1px solid var(--line)}
+.penta-root .feat .ic{font-size:22px}
+.penta-root .feat h4{margin:12px 0 5px;font-size:15px;font-weight:800}
+.penta-root .feat p{margin:0;font-size:13px;line-height:1.5;color:var(--mut)}
+@media (max-width:760px){.penta-root .feats{grid-template-columns:1fr}}
+
+/* ---- insights reveal wrapper ---- */
+.penta-root .insights-wrap{position:relative}
+.penta-root .reveal-anim{opacity:0;transform:translateY(18px);transition:opacity .7s ease,transform .7s ease}
+.penta-root .reveal-anim.in{opacity:1;transform:none}
+
+/* ---- match summary hero ---- */
+.penta-root .hero{position:relative;overflow:hidden;border-radius:22px;padding:26px 26px 22px;
+  background:linear-gradient(165deg,#121b27 0%,#0b1019 100%);border:1px solid rgba(255,255,255,.06);
+  box-shadow:0 14px 40px rgba(0,0,0,.4);margin:0 0 14px}
+.penta-root .hero .hb{position:absolute;width:340px;height:340px;border-radius:50%;filter:blur(60px);opacity:.16;pointer-events:none}
+.penta-root .hero .hb1{background:var(--blue);top:-150px;left:-70px;animation:pdriftA 14s ease-in-out infinite}
+.penta-root .hero .hb2{background:var(--yel);bottom:-160px;right:-70px;animation:pdriftB 16s ease-in-out infinite}
+.penta-root .hero-grid{position:relative;z-index:1;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:14px}
+.penta-root .side{display:flex;flex-direction:column;align-items:center;gap:6px}
+.penta-root .side .tname{font-weight:800;letter-spacing:1.2px;font-size:13px}
+.penta-root .side .crest{width:54px;height:54px;border-radius:16px;display:grid;place-items:center;font-weight:900;font-size:22px;color:#0b1019}
+.penta-root .side.blue .crest{background:linear-gradient(135deg,var(--blue-a),var(--blue-b))}
+.penta-root .side.yel .crest{background:linear-gradient(135deg,var(--yel-a),var(--yel-b))}
+.penta-root .side .poss{font-size:11px;color:var(--mut)}
+.penta-root .score{display:flex;align-items:center;gap:14px}
+.penta-root .score .n{font-size:62px;font-weight:800;line-height:1}
+.penta-root .score .n.blue{color:var(--blue)} .penta-root .score .n.yel{color:var(--yel)}
+.penta-root .score .dash{color:var(--mut);font-size:34px;font-weight:300}
+.penta-root .result{margin-top:6px;text-align:center;color:var(--sub);font-size:12px;letter-spacing:1.4px;text-transform:uppercase;font-weight:700}
+.penta-root .hero-meta{position:relative;z-index:1;display:flex;flex-wrap:wrap;gap:10px;margin-top:20px}
+.penta-root .mvp{display:flex;align-items:center;gap:11px;padding:11px 14px;border-radius:14px;
+  background:linear-gradient(180deg,#19232f,#131c27);border:1px solid var(--line)}
+.penta-root .mvp .star{width:34px;height:34px;border-radius:11px;display:grid;place-items:center;background:var(--gold);color:var(--gold-ink);font-weight:900}
+.penta-root .mvp .l{font-size:9.5px;letter-spacing:1.6px;text-transform:uppercase;color:var(--mut);font-weight:700}
+.penta-root .mvp .v{font-weight:800;font-size:15px}
+.penta-root .mvp .v small{color:var(--sub);font-weight:600;font-size:11px;margin-left:4px}
+.penta-root .chips{display:flex;flex-wrap:wrap;gap:8px;margin-left:auto}
+.penta-root .stat-chip{padding:9px 13px;border-radius:13px;background:var(--card-dk);border:1px solid var(--line);min-width:96px}
+.penta-root .stat-chip .l{font-size:9px;letter-spacing:1.4px;text-transform:uppercase;color:var(--mut);font-weight:700}
+.penta-root .stat-chip .v{font-weight:800;font-size:18px;margin-top:2px}
+.penta-root .stat-chip .v small{font-size:11px;color:var(--sub);font-weight:600;margin-left:2px}
+
+/* ---- story ---- */
+.penta-root .story{border-radius:18px;padding:18px 20px;margin:0 0 16px;
+  background:linear-gradient(180deg,#19232f,#131c27);border:1px solid rgba(255,255,255,.05)}
+.penta-root .story h3{margin:0 0 8px;font-size:12px;letter-spacing:1.8px;text-transform:uppercase;color:var(--sub);font-weight:800}
+.penta-root .story p{margin:0;font-size:15px;line-height:1.65;color:#dbe6f2}
+.penta-root .story p b{color:#fff}
+
+/* ---- tabs ---- */
+.penta-root .tabs{display:inline-flex;gap:4px;background:var(--card-dk);border:1px solid var(--line);
+  border-radius:14px;padding:5px;margin:0 0 20px;flex-wrap:wrap}
+.penta-root .tabs button{cursor:pointer;border:1px solid transparent;background:transparent;color:var(--sub);
+  font-size:13px;font-weight:700;padding:9px 16px;border-radius:10px;transition:color .2s,background .2s}
+.penta-root .tabs button.on{color:#fff;background:linear-gradient(180deg,#22354c,#18283a);border-color:var(--line-hi)}
+.penta-root .panel{animation:panelIn .4s ease both}
+@keyframes panelIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.penta-root .card{background:linear-gradient(165deg,#121b27 0%,#0b1019 100%);border:1px solid rgba(255,255,255,.06);
+  border-radius:20px;padding:22px 24px 26px;box-shadow:0 14px 40px rgba(0,0,0,.4)}
+.penta-root .card-h{font-size:19px;font-weight:800;letter-spacing:.2px}
+.penta-root .card-s{font-size:12px;color:var(--mut);margin:2px 0 16px}
+
+/* ---- heatmap ---- */
+.penta-root .heat-canvas{width:100%;height:auto;border-radius:12px;display:block;background:#0a1018}
+.penta-root .heat-leg{display:flex;gap:16px;margin-top:14px;font-size:12px;color:var(--sub)}
+.penta-root .heat-leg i{display:inline-block;width:22px;height:8px;border-radius:4px;margin-right:6px;vertical-align:middle}
+
+/* ---- team analysis ---- */
+.penta-root .ta-dash{position:relative;overflow:hidden}
+.penta-root .ta-fx .tblob{position:absolute;width:300px;height:300px;border-radius:50%;filter:blur(55px);opacity:.13;pointer-events:none}
+.penta-root .tb1{background:var(--blue);top:-130px;left:-70px;animation:pdriftA 14s ease-in-out infinite}
+.penta-root .tb2{background:var(--yel);bottom:-130px;right:-70px;animation:pdriftB 16s ease-in-out infinite}
+.penta-root .ta-head{position:relative;z-index:1;display:flex;align-items:flex-start;gap:12px;margin-bottom:6px}
+.penta-root .ta-title{font-size:19px;font-weight:800}
+.penta-root .ta-sub{font-size:12px;color:var(--mut);margin:2px 0 0}
+.penta-root .ta-leg{margin-left:auto;display:flex;gap:7px}
+.penta-root .ta-chip,.penta-root .fa-chip{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:700;color:var(--sub);
+  background:var(--card-dk);border:1px solid var(--line);border-radius:999px;padding:4px 10px}
+.penta-root .ta-chip i,.penta-root .fa-chip i{width:9px;height:9px;border-radius:50%}
+.penta-root .ta-rows{position:relative;z-index:1}
+.penta-root .ta-row{margin:20px 0;animation:taIn .55s ease both}
+@keyframes taIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+.penta-root .ta-mlabel{text-align:center;font-size:11px;font-weight:700;letter-spacing:1.6px;text-transform:uppercase;color:var(--sub);margin-bottom:8px}
+.penta-root .ta-line{display:grid;grid-template-columns:74px 1fr 74px;align-items:center;gap:14px}
+.penta-root .ta-num{font-size:25px;font-weight:800}
+.penta-root .ta-num.l{text-align:right} .penta-root .ta-num.r{text-align:left}
+.penta-root .ta-num .u{font-size:12px;font-weight:600;color:var(--sub);margin-left:1px}
+.penta-root .ta-bar{position:relative;height:18px;border-radius:999px;background:var(--card-dk);border:1px solid var(--line);overflow:hidden;display:flex}
+.penta-root .ta-fill{height:100%;width:0;transition:width 1.05s cubic-bezier(.34,.02,.18,1)}
+.penta-root .ta-fill.b{background:linear-gradient(90deg,var(--blue-a),var(--blue-b))}
+.penta-root .ta-fill.y{margin-left:auto;background:linear-gradient(90deg,var(--yel-a),var(--yel-b))}
+.penta-root .ta-fill.win{box-shadow:0 0 14px var(--g)}
+.penta-root .ta-meet{position:absolute;top:50%;left:50%;width:3px;height:24px;border-radius:2px;background:var(--ink);
+  transform:translate(-50%,-50%);box-shadow:0 0 8px rgba(255,255,255,.55);opacity:0;
+  transition:left 1.05s cubic-bezier(.34,.02,.18,1),opacity .4s}
+
+/* ---- player stats ---- */
+.penta-root .fa-head{display:flex;align-items:flex-start;gap:12px}
+.penta-root .fa-title{font-size:19px;font-weight:800}
+.penta-root .fa-sub{font-size:12px;color:var(--mut);margin:2px 0 0}
+.penta-root .fa-leg{margin-left:auto;display:flex;gap:7px}
+.penta-root .seg{position:relative;display:inline-flex;background:var(--card-dk);border:1px solid var(--line);
+  border-radius:13px;padding:4px;gap:2px;margin:16px 0 18px;flex-wrap:wrap}
+.penta-root .seg-ind{position:absolute;top:4px;bottom:4px;left:4px;width:0;border-radius:10px;z-index:0;
+  background:linear-gradient(180deg,#22354c,#18283a);border:1px solid var(--line-hi);box-shadow:0 2px 8px rgba(0,0,0,.3);
+  transition:left .3s cubic-bezier(.4,.05,.2,1),width .3s cubic-bezier(.4,.05,.2,1)}
+.penta-root .seg-btn{position:relative;z-index:1;cursor:pointer;border:0;background:transparent;padding:8px 15px;font-size:12.5px;font-weight:600;color:var(--sub);
+  border-radius:10px;transition:color .2s;white-space:nowrap;user-select:none}
+.penta-root .seg-btn.on{color:#fff}
+.penta-root .fa-grid,.penta-root .aw-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(244px,1fr));gap:14px}
+.penta-root .pc{position:relative;border-radius:16px;padding:15px 16px 16px;overflow:hidden;
+  background:linear-gradient(180deg,#19232f,#131c27);border:1px solid rgba(255,255,255,.05);
+  box-shadow:0 6px 18px rgba(0,0,0,.25);animation:pcIn .45s ease both;transition:transform .2s,border-color .2s}
+.penta-root .pc::before{content:'';position:absolute;left:0;top:0;height:100%;width:4px;background:var(--ac);z-index:2}
+.penta-root .pc:hover{transform:translateY(-3px);border-color:var(--ac)}
+@keyframes pcIn{from{opacity:0;transform:translateY(10px) scale(.985)}to{opacity:1;transform:none}}
+.penta-root .pc-fx .blob{position:absolute;width:150px;height:150px;border-radius:50%;
+  background:radial-gradient(circle,var(--ac) 0%,transparent 68%);filter:blur(16px);opacity:0}
+.penta-root .pc-fx .b1{animation:pcdrift1 9s ease-in-out infinite}
+.penta-root .pc-fx .b2{animation:pcdrift2 12s ease-in-out infinite;animation-delay:-3s}
+.penta-root .pc-fx .b3{animation:pcdrift3 15s ease-in-out infinite;animation-delay:-6s}
+.penta-root .rk{position:absolute;top:13px;right:14px;font-size:10px;font-weight:800;padding:2px 8px;border-radius:8px;z-index:3}
+.penta-root .rk.g1{background:var(--gold);color:var(--gold-ink)}
+.penta-root .rk.g2{background:var(--silver);color:var(--silver-ink)}
+.penta-root .rk.g3{background:var(--bronze);color:var(--bronze-ink)}
+.penta-root .pc-top{position:relative;z-index:1;display:flex;align-items:center;gap:8px;margin-bottom:12px}
+.penta-root .pc-dot{width:11px;height:11px;border-radius:50%;background:var(--ac);flex:none;
+  box-shadow:0 0 0 3px color-mix(in srgb,var(--ac) 22%,transparent);animation:dotPulse 2.4s ease-in-out infinite}
+.penta-root .pc-name{font-weight:800;font-size:16px;letter-spacing:.2px}
+.penta-root .pc-min{margin-left:auto;font-size:10px;color:var(--mut);background:var(--field);border-radius:999px;padding:3px 8px}
+.penta-root .pc-feat{position:relative;z-index:1;display:flex;align-items:baseline;gap:6px;margin-bottom:2px}
+.penta-root .pc-big{font-size:30px;font-weight:800;line-height:1;color:var(--ac)}
+.penta-root .pc-unit{font-size:12px;color:var(--sub);font-weight:600}
+.penta-root .pc-flab{font-size:10px;color:var(--mut);text-transform:uppercase;letter-spacing:1px;font-weight:700;margin-left:auto}
+.penta-root .pc-radar{position:relative;z-index:1;display:flex;justify-content:center;margin:8px 0 2px}
+.penta-root .pc-ring{position:absolute;top:50%;left:50%;width:96px;height:96px;border-radius:50%;border:1.5px solid var(--ac);
+  transform:translate(-50%,-50%) scale(.4);opacity:0;animation:ringPulse 3.2s ease-out infinite}
+.penta-root .radar-poly{animation:radarIn .55s cubic-bezier(.2,.8,.2,1) both;transform-origin:center}
+
+/* ---- awards ---- */
+.penta-root .aw{position:relative;overflow:hidden;border-radius:16px;padding:16px;
+  background:linear-gradient(180deg,#19232f,#131c27);border:1px solid rgba(255,255,255,.05);
+  box-shadow:0 6px 18px rgba(0,0,0,.25);animation:pcIn .45s ease both}
+.penta-root .aw::before{content:'';position:absolute;left:0;top:0;height:100%;width:4px;background:var(--ac);z-index:2}
+.penta-root .aw-ico{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;font-size:20px;
+  background:color-mix(in srgb,var(--ac) 18%,transparent);border:1px solid color-mix(in srgb,var(--ac) 40%,transparent)}
+.penta-root .aw-top{display:flex;align-items:center;gap:11px;margin-bottom:12px}
+.penta-root .aw-ttl{font-size:9.5px;letter-spacing:1.6px;text-transform:uppercase;color:var(--mut);font-weight:800}
+.penta-root .aw-win{font-weight:800;font-size:16px;margin-top:1px}
+.penta-root .aw-val{display:flex;align-items:baseline;gap:5px}
+.penta-root .aw-val .v{font-size:26px;font-weight:800;color:var(--ac)}
+.penta-root .aw-val .u{font-size:12px;color:var(--sub);font-weight:600}
+.penta-root .aw-why{font-size:12px;color:var(--mut);margin-top:8px;line-height:1.5}
+
+/* ---- your game (personal) ---- */
+.penta-root .pg-top{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:6px}
+.penta-root .pg-top .card-h{margin-right:auto}
+.penta-root select.pg-pick{background:var(--field);color:var(--ink);border:1px solid var(--line-hi);border-radius:12px;
+  padding:9px 14px;font-size:14px;font-weight:700;cursor:pointer;outline:none}
+.penta-root .pg-body{display:grid;grid-template-columns:200px 1fr;gap:22px;align-items:start;margin-top:6px}
+.penta-root .pg-radar{display:flex;justify-content:center;position:relative}
+.penta-root .pg-stats{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.penta-root .pg-stat{background:var(--card-dk);border:1px solid var(--line);border-radius:13px;padding:12px 14px}
+.penta-root .pg-stat .l{font-size:9.5px;letter-spacing:1.4px;text-transform:uppercase;color:var(--mut);font-weight:700}
+.penta-root .pg-stat .v{font-weight:800;font-size:22px;margin-top:3px}
+.penta-root .pg-stat .v small{font-size:11px;color:var(--sub);font-weight:600;margin-left:2px}
+.penta-root .pg-stat .rank{font-size:11px;font-weight:700;margin-top:5px}
+.penta-root .pg-rank-good{color:#36d399} .penta-root .pg-rank-mid{color:var(--yel)} .penta-root .pg-rank-low{color:var(--sub)}
+.penta-root .pg-insight{grid-column:1/-1;margin-top:4px;display:flex;flex-direction:column;gap:10px}
+.penta-root .pg-note{border-radius:13px;padding:13px 15px;font-size:14px;line-height:1.55}
+.penta-root .pg-note.good{background:rgba(54,211,153,.08);border:1px solid rgba(54,211,153,.25)}
+.penta-root .pg-note.tip{background:rgba(245,182,42,.08);border:1px solid rgba(245,182,42,.25)}
+.penta-root .pg-note .lab{display:block;font-size:9.5px;letter-spacing:1.6px;text-transform:uppercase;font-weight:800;margin-bottom:4px}
+.penta-root .pg-note.good .lab{color:#36d399} .penta-root .pg-note.tip .lab{color:var(--yel)}
+.penta-root .pg-note b{color:#fff}
+
+/* ---- footer ---- */
+.penta-root .pfoot{border-top:1px solid var(--line);margin-top:40px;padding:28px 0;color:var(--mut);font-size:12.5px}
+.penta-root .pfoot-in{max-width:1140px;margin:0 auto;padding:0 18px;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.penta-root .pfoot .brand{font-size:14px}
+
+/* ---- keyframes ---- */
+@keyframes pdriftA{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(46px,34px) scale(1.12)}}
+@keyframes pdriftB{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(-46px,-34px) scale(1.14)}}
+@keyframes pcdrift1{0%{transform:translate(-30%,110%) scale(.6);opacity:.05}50%{transform:translate(55%,20%) scale(1.05);opacity:.20}100%{transform:translate(-30%,110%) scale(.6);opacity:.05}}
+@keyframes pcdrift2{0%{transform:translate(90%,90%) scale(.7);opacity:.04}50%{transform:translate(10%,-15%) scale(1);opacity:.16}100%{transform:translate(90%,90%) scale(.7);opacity:.04}}
+@keyframes pcdrift3{0%{transform:translate(40%,-20%) scale(.5);opacity:.04}50%{transform:translate(-15%,70%) scale(.95);opacity:.14}100%{transform:translate(40%,-20%) scale(.5);opacity:.04}}
+@keyframes dotPulse{0%,100%{box-shadow:0 0 0 3px color-mix(in srgb,var(--ac) 22%,transparent)}50%{box-shadow:0 0 0 6px color-mix(in srgb,var(--ac) 6%,transparent)}}
+@keyframes ringPulse{0%{transform:translate(-50%,-50%) scale(.4);opacity:.35}70%{opacity:0}100%{transform:translate(-50%,-50%) scale(1.25);opacity:0}}
+@keyframes radarIn{from{transform:scale(.15);opacity:0}to{transform:scale(1);opacity:1}}
+
+@media (max-width:680px){
+  .penta-root .score .n{font-size:46px}
+  .penta-root .chips{margin-left:0;width:100%}
+  .penta-root .pg-body{grid-template-columns:1fr}
+}
+@media (prefers-reduced-motion:reduce){
+  .penta-root *{animation:none!important;transition:none!important}
+  .penta-root .reveal-anim{opacity:1;transform:none}
+}

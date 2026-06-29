@@ -10,12 +10,19 @@ import Services from './pages/Services';
 import SubmitBrand from './pages/SubmitBrand';
 import Dashboard from './pages/Dashboard';
 import MetaInfo from './pages/MetaInfo';
+import Penta from './pages/penta/Penta';
 
 export default function App() {
   return (
-    <Layout>
-      <Switch>
-        <Route path="/" component={Home} />
+    <Switch>
+      {/* penta — dark, self-contained experience rendered outside the fashion Layout */}
+      <Route path="/penta" component={Penta} />
+
+      {/* Everything else: the Cairo Code Elite fashion app */}
+      <Route>
+        <Layout>
+          <Switch>
+            <Route path="/" component={Home} />
         <Route path="/brands" component={Brands} />
         <Route path="/stylist" component={Stylist} />
         <Route path="/community" component={Community} />
@@ -33,9 +40,11 @@ export default function App() {
         <Route path="/quality" component={() => <MetaInfo title="Quality Standards" />} />
         <Route path="/contact" component={() => <MetaInfo title="Contact Sales" />} />
 
-        {/* Fallback to Home for other routes mentioned in prompt but not fully implemented yet */}
-        <Route path="/:rest*" component={Home} />
-      </Switch>
-    </Layout>
+            {/* Fallback to Home for other routes mentioned in prompt but not fully implemented yet */}
+            <Route path="/:rest*" component={Home} />
+          </Switch>
+        </Layout>
+      </Route>
+    </Switch>
   );
 }
