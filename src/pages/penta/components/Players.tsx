@@ -1,5 +1,6 @@
 import { CSSProperties, useLayoutEffect, useRef, useState } from 'react';
-import { COL, MATCH, P, Player, rating, ratingTier } from '../matchData';
+import { COL, MATCH, P, Player, pnum, ppos, rating, ratingTier } from '../matchData';
+import Avatar from './Avatar';
 import CountUp from './CountUp';
 import Radar from './Radar';
 
@@ -57,8 +58,11 @@ export default function Players({ active }: { active: boolean }) {
               <div key={p.id} className="pc" style={{ '--ac': COL[p.team], animationDelay: `${idx * 0.04}s` } as CSSProperties}>
                 <div className={`pc-rate rate ${ratingTier(r)}`} title="Match rating">{r.toFixed(1)}</div>
                 <div className="pc-top">
-                  <span className="pc-dot" />
-                  <span className="pc-name">{p.id}</span>
+                  <Avatar player={p} size={34} />
+                  <span className="pc-id">
+                    <span className="pc-name">{p.id}</span>
+                    <span className="pc-pos">{`${ppos(p)} · #${pnum(p)}`}</span>
+                  </span>
                   <span className="pc-min">{p.mins} min</span>
                 </div>
                 <div className="pc-feat">

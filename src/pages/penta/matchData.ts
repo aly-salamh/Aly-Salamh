@@ -225,6 +225,11 @@ export const leaderboard = (): BoardRow[] =>
 /** rating tier → css class suffix for colouring the pill */
 export const ratingTier = (r: number): 'hi' | 'mid' | 'lo' => (r >= 8 ? 'hi' : r >= 6.5 ? 'mid' : 'lo');
 
+// ---- profile identity: jersey number + position ----
+const POS = ['GK', 'DEF', 'MID', 'MID', 'FWD'];
+export const pnum = (p: Player): string => p.id.replace(/[^0-9]/g, '') || '0';
+export const ppos = (p: Player): string => POS[(+pnum(p)) - 1] || 'SUB';
+
 // occupancy points per team for the heatmap: [xFrac, yFrac, weight]
 export const HEAT: Record<TeamId, [number, number, number][]> = {
   BLUE: [[0.28, 0.5, 1], [0.18, 0.32, 0.7], [0.35, 0.66, 0.8], [0.45, 0.5, 0.9], [0.22, 0.7, 0.6], [0.4, 0.3, 0.7], [0.12, 0.5, 0.5]],

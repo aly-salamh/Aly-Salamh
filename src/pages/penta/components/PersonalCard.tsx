@@ -1,6 +1,7 @@
 import { CSSProperties, Fragment, useState } from 'react';
 import { COL, MVP, P, Player, badgesFor, fmt, levelOf, ord, rankOf, rating, xp } from '../matchData';
 import Radar from './Radar';
+import Avatar from './Avatar';
 
 type Key = Exclude<keyof Player, 'id' | 'team'>;
 
@@ -56,6 +57,7 @@ export default function PersonalCard() {
           const lv = levelOf(p);
           return (
             <div className="pg-hero">
+              <Avatar player={p} size={56} />
               <div className="pg-rate">
                 <span className="big">{r.toFixed(1)}</span>
                 <span className="cap">Rating</span>

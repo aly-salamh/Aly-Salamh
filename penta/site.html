@@ -334,6 +334,44 @@
   .pg-lvlbox{flex:1;min-width:220px}
   .pg-sublab{font-size:10px;letter-spacing:1.6px;text-transform:uppercase;color:var(--sub);font-weight:800;margin:18px 0 10px}
   @media (max-width:560px){.bd-row,.bd-head{grid-template-columns:28px 1fr auto auto}.bd-xp,.bd-head .h-xp{display:none}}
+  /* ---- avatars ---- */
+  .ava{border-radius:50%;display:block;flex:none;box-shadow:0 2px 6px rgba(0,0,0,.3)}
+  .pc-id{display:flex;flex-direction:column;line-height:1.15}
+  .pc-pos{font-size:9.5px;letter-spacing:1px;text-transform:uppercase;color:var(--mut);font-weight:700}
+  /* ---- 3D pitch ---- */
+  .pitch-wrap{perspective:1200px;perspective-origin:50% 26%;padding:18px 0 6px}
+  .pitch3d{position:relative;width:100%;padding-bottom:60%;transform:rotateX(51deg) scale(.98);transform-style:preserve-3d;
+    border-radius:8px;border:2px solid rgba(255,255,255,.35);
+    background:repeating-linear-gradient(90deg,#0f3d22 0 9%,#0c3a20 9% 18%);
+    box-shadow:0 50px 70px -20px rgba(0,0,0,.7), inset 0 0 60px rgba(0,0,0,.35)}
+  .pl-line{position:absolute;background:rgba(255,255,255,.32)}
+  .pl-mid{left:50%;top:0;bottom:0;width:2px;transform:translateX(-1px)}
+  .pl-circle{left:50%;top:50%;width:22%;padding-bottom:22%;border:2px solid rgba(255,255,255,.3);border-radius:50%;transform:translate(-50%,-50%)}
+  .pl-spot{left:50%;top:50%;width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.5);transform:translate(-50%,-50%)}
+  .pl-box{top:50%;width:13%;height:46%;border:2px solid rgba(255,255,255,.28);transform:translateY(-50%)}
+  .pl-box.l{left:0;border-left:0} .pl-box.r{right:0;border-right:0}
+  .pl-goal{top:50%;width:3%;height:20%;border:2px solid rgba(255,255,255,.4);transform:translateY(-50%)}
+  .pl-goal.l{left:-1.6%} .pl-goal.r{right:-1.6%}
+  .pl-circle,.pl-box,.pl-goal{background:transparent}
+  .hb3{position:absolute;border-radius:50%;transform:translate(-50%,-50%);filter:blur(7px);mix-blend-mode:screen;pointer-events:none}
+  /* ---- compare ---- */
+  .cmp-head{display:grid;grid-template-columns:1fr auto 1fr;gap:12px;align-items:start;margin:4px 0 18px}
+  .cmp-pick{display:flex;flex-direction:column;align-items:center;gap:8px;text-align:center}
+  .cmp-pick.b{align-items:flex-start;text-align:left} .cmp-pick.a{align-items:flex-end;text-align:right}
+  .cmp-pick select{background:var(--field);color:var(--ink);border:1px solid var(--line-hi);border-radius:10px;padding:7px 10px;font-size:13px;font-weight:700;cursor:pointer;outline:none}
+  .cmp-name{font-weight:800;font-size:17px}
+  .cmp-meta{font-size:10.5px;color:var(--mut);font-weight:700;letter-spacing:.6px;text-transform:uppercase}
+  .cmp-vs{align-self:center;font-size:12px;font-weight:800;color:var(--mut);background:var(--card-dk);border:1px solid var(--line);border-radius:999px;padding:7px 10px}
+  .cmp-radar{display:flex;justify-content:center;margin:6px 0 16px}
+  .cmp-rows{display:flex;flex-direction:column;gap:14px}
+  .cmp-row .cl{text-align:center;font-size:10.5px;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;color:var(--sub);margin-bottom:7px}
+  .cmp-line{display:grid;grid-template-columns:60px 1fr 60px;align-items:center;gap:12px}
+  .cmp-v{font-size:18px;font-weight:800} .cmp-v.l{text-align:right} .cmp-v.r{text-align:left}
+  .cmp-bar{position:relative;height:14px;border-radius:999px;background:var(--card-dk);border:1px solid var(--line);overflow:hidden;display:flex}
+  .cmp-fill{height:100%;width:0;transition:width .9s cubic-bezier(.34,.02,.18,1)}
+  .cmp-fill.r{margin-left:auto}
+  .cmp-leg{display:flex;align-items:center;gap:6px;font-size:11px;font-weight:700}
+  .cmp-leg i{width:9px;height:9px;border-radius:50%}
 </style>
 </head>
 <body>
@@ -450,6 +488,7 @@
       <button data-tab="heat" class="on">Heatmaps</button>
       <button data-tab="team">Team</button>
       <button data-tab="players">Players</button>
+      <button data-tab="compare">Compare</button>
       <button data-tab="board">Leaderboard</button>
       <button data-tab="awards">Awards</button>
       <button data-tab="you">Your game</button>
@@ -459,8 +498,8 @@
     <section id="tab-heat" class="panel on">
       <div class="card">
         <div class="card-h">Occupancy heatmaps</div>
-        <div class="card-s">Where each side spent its time on the pitch · team occupancy</div>
-        <canvas id="heatCanvas" width="1040" height="620"></canvas>
+        <div class="card-s">Where each side spent its time on the pitch · 3D pitch view</div>
+        <div class="pitch-wrap"><div class="pitch3d" id="pitch3d"></div></div>
         <div class="heat-leg">
           <span><i style="background:linear-gradient(90deg,transparent,var(--blue))"></i>BLUE occupancy</span>
           <span><i style="background:linear-gradient(90deg,transparent,var(--yel))"></i>YEL occupancy</span>
@@ -501,6 +540,27 @@
         </div>
         <div class="seg" id="fa-seg"><div class="seg-ind" id="fa-ind"></div></div>
         <div class="fa-grid" id="fa-grid"></div>
+      </div>
+    </section>
+
+    <!-- COMPARE -->
+    <section id="tab-compare" class="panel">
+      <div class="card">
+        <div class="card-h">Head-to-head compare</div>
+        <div class="card-s">Pick any two players and see how they stack up</div>
+        <div class="cmp-head">
+          <div class="cmp-pick a">
+            <select id="cmpA"></select>
+            <div id="cmpAcard"></div>
+          </div>
+          <div class="cmp-vs">VS</div>
+          <div class="cmp-pick b">
+            <select id="cmpB"></select>
+            <div id="cmpBcard"></div>
+          </div>
+        </div>
+        <div class="cmp-radar" id="cmpRadar"></div>
+        <div class="cmp-rows" id="cmpRows"></div>
       </div>
     </section>
 
@@ -629,6 +689,19 @@ const BADGES=[
   {key:'busy',ico:'🔥',name:'Involved',desc:'5+ touches in the game',on:p=>p.touches>=5}
 ];
 function leaderboard(){ return [...P].sort((a,b)=> rating(b)-rating(a) || xpOf(b)-xpOf(a)).map((player,i)=>({rank:i+1,player,rating:rating(player),level:levelOf(player).level,xp:xpOf(player)})); }
+
+/* ---- profile identity: jersey number, position, avatar ---- */
+const POS=['GK','DEF','MID','MID','FWD'];
+function pnum(p){ return p.id.replace(/[^0-9]/g,'')||'0'; }
+function ppos(p){ return POS[(+pnum(p))-1]||'SUB'; }
+function avatar(p,size){
+  size=size||44; const g=p.team==='BLUE'?['#1e5fd6','#4f93ff']:['#ffc94d','#f5a623']; const id='av'+p.id+size;
+  return `<svg class="ava" width="${size}" height="${size}" viewBox="0 0 44 44" aria-hidden="true">`+
+    `<defs><linearGradient id="${id}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${g[0]}"/><stop offset="1" stop-color="${g[1]}"/></linearGradient></defs>`+
+    `<circle cx="22" cy="22" r="21" fill="url(#${id})" stroke="rgba(255,255,255,.18)"/>`+
+    `<text x="22" y="29" text-anchor="middle" font-size="19" font-weight="800" fill="#04140a">${pnum(p)}</text>`+
+  `</svg>`;
+}
 
 /* ============================================================
    HERO
@@ -811,7 +884,7 @@ function renderPlayers(){
       const r = rating(p);
       card.innerHTML =
         `<div class="pc-rate rate ${ratingTier(r)}" title="Match rating">${r.toFixed(1)}</div>`+
-        `<div class="pc-top"><span class="pc-dot"></span><span class="pc-name">${p.id}</span><span class="pc-min">${p.mins} min</span></div>`+
+        `<div class="pc-top">${avatar(p,34)}<span class="pc-id"><span class="pc-name">${p.id}</span><span class="pc-pos">${ppos(p)} · #${pnum(p)}</span></span><span class="pc-min">${p.mins} min</span></div>`+
         `<div class="pc-feat"><span class="pc-big num">0</span><span class="pc-unit">${unit}</span><span class="pc-flab">${label}</span></div>`+
         `<div class="pc-radar"><span class="pc-ring"></span>${radarSVG(p,faActive,132)}</div>`;
       grid.appendChild(card);
@@ -859,7 +932,7 @@ function renderBoard(){
     const m = row.rank<=3 ? ` m${row.rank}` : '';
     return `<div class="bd-row${top}">`+
       `<div class="bd-rank${m}">${row.rank}</div>`+
-      `<div class="bd-who"><span class="bd-dot" style="background:${COL[row.player.team]}"></span><span class="bd-name">${row.player.id}</span><span class="bd-team">${row.player.team}</span></div>`+
+      `<div class="bd-who">${avatar(row.player,30)}<span class="bd-name">${row.player.id}</span><span class="bd-team">${ppos(row.player)} · ${row.player.team}</span></div>`+
       `<div class="bd-lvl">Lv ${row.level}</div>`+
       `<div class="bd-xp">${row.xp} XP</div>`+
       `<div class="rate ${ratingTier(row.rating)}">${row.rating.toFixed(1)}</div>`+
@@ -887,6 +960,7 @@ function renderPersonal(){
     const rt=rating(p), lv=levelOf(p);
     document.getElementById('pgHero').innerHTML =
       `<div class="pg-hero">`+
+        avatar(p,56)+
         `<div class="pg-rate"><span class="big">${rt.toFixed(1)}</span><span class="cap">Rating</span></div>`+
         `<div class="pg-lvlbox">`+
           `<div class="lvl"><span class="lvl-badge">Level ${lv.level}</span>`+
@@ -939,6 +1013,58 @@ function renderPersonal(){
 }
 
 /* ============================================================
+   COMPARE (head-to-head between two players)
+   ============================================================ */
+function compareRadar(a,b,size){
+  size=size||210; const c=size/2,R=size*0.33; const axes=MATCH.radarAxes; const n=axes.length;
+  let grid='',spokes='',labels='';
+  [0.5,1].forEach(rr=>{ let pp=[]; for(let i=0;i<n;i++){const ang=-Math.PI/2+i*2*Math.PI/n; pp.push((c+Math.cos(ang)*R*rr).toFixed(1)+','+(c+Math.sin(ang)*R*rr).toFixed(1));} grid+=`<polygon points="${pp.join(' ')}" fill="none" stroke="#26402f" stroke-width="1"/>`; });
+  const poly=p=>{ let pts=[]; for(let i=0;i<n;i++){const k=axes[i][0]; const ang=-Math.PI/2+i*2*Math.PI/n; const mx=maxOf(k)||1; const r=R*Math.max(0.06,p[k]/mx); pts.push((c+Math.cos(ang)*r).toFixed(1)+','+(c+Math.sin(ang)*r).toFixed(1));} return pts.join(' '); };
+  for(let i=0;i<n;i++){const [k,lab]=axes[i]; const ang=-Math.PI/2+i*2*Math.PI/n; spokes+=`<line x1="${c}" y1="${c}" x2="${(c+Math.cos(ang)*R).toFixed(1)}" y2="${(c+Math.sin(ang)*R).toFixed(1)}" stroke="#1f3127" stroke-width="1"/>`; const lx=c+Math.cos(ang)*(R+12),ly=c+Math.sin(ang)*(R+12); labels+=`<text x="${lx.toFixed(1)}" y="${(ly+3).toFixed(1)}" text-anchor="middle" font-size="8.5" fill="#7e948a">${lab}</text>`;}
+  return `<svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}">`+grid+spokes+
+    `<polygon points="${poly(a)}" fill="${COL[a.team]}" fill-opacity="0.20" stroke="${COL[a.team]}" stroke-width="2" stroke-linejoin="round"/>`+
+    `<polygon points="${poly(b)}" fill="none" stroke="${COL[b.team]}" stroke-width="2" stroke-dasharray="4 3" stroke-linejoin="round"/>`+
+    labels+`</svg>`;
+}
+function cmpProfile(p){
+  const rt=rating(p),lv=levelOf(p);
+  return avatar(p,64)+`<div class="cmp-name">${p.id}</div>`+
+    `<div class="cmp-meta">${ppos(p)} · ${p.team} · Lv ${lv.level}</div>`+
+    `<div class="rate ${ratingTier(rt)}" style="margin-top:5px">${rt.toFixed(1)}</div>`;
+}
+function renderCompare(){
+  const selA=document.getElementById('cmpA'), selB=document.getElementById('cmpB');
+  if(!selA.dataset.built){
+    const opts=P.map(p=>`<option value="${p.id}">${p.id} · ${ppos(p)}</option>`).join('');
+    selA.innerHTML=opts; selB.innerHTML=opts;
+    const lb=leaderboard(); selA.value=lb[0].player.id; selB.value=lb[1].player.id;
+    selA.onchange=draw; selB.onchange=draw; selA.dataset.built='1';
+  }
+  function draw(){
+    const a=P.find(x=>x.id===selA.value), b=P.find(x=>x.id===selB.value);
+    document.getElementById('cmpAcard').innerHTML=cmpProfile(a);
+    document.getElementById('cmpBcard').innerHTML=cmpProfile(b);
+    document.getElementById('cmpRadar').innerHTML =
+      `<div style="text-align:center">`+compareRadar(a,b,210)+
+      `<div style="display:flex;gap:16px;justify-content:center;margin-top:4px">`+
+        `<span class="cmp-leg" style="color:${COL[a.team]}"><i style="background:${COL[a.team]}"></i>${a.id}</span>`+
+        `<span class="cmp-leg" style="color:${COL[b.team]}"><i style="background:${COL[b.team]}"></i>${b.id}</span>`+
+      `</div></div>`;
+    const metrics=[['Distance','dist','m'],['Top speed','top','m/s'],['Passes','made',''],['Possession','poss','s'],['Touches','touches',''],['Sprints','sprint','']];
+    document.getElementById('cmpRows').innerHTML=metrics.map(([l,k,u])=>{
+      const va=a[k], vb=b[k], tot=va+vb; const wa=tot>0?va/tot*100:50, wb=tot>0?vb/tot*100:50;
+      const us=u?`<span style="font-size:11px;color:var(--sub)"> ${u}</span>`:'';
+      return `<div class="cmp-row"><div class="cl">${l}</div><div class="cmp-line">`+
+        `<div class="cmp-v l" style="color:${COL[a.team]}">${fmt(va,u)}${us}</div>`+
+        `<div class="cmp-bar"><div class="cmp-fill" style="width:${wa}%;background:${COL[a.team]}"></div><div class="cmp-fill r" style="width:${wb}%;background:${COL[b.team]}"></div></div>`+
+        `<div class="cmp-v r" style="color:${COL[b.team]}">${fmt(vb,u)}${us}</div>`+
+        `</div></div>`;
+    }).join('');
+  }
+  draw();
+}
+
+/* ============================================================
    HEATMAPS (procedural pitch + occupancy blooms)
    ============================================================ */
 // occupancy points per team: [xFrac, yFrac, weight]
@@ -946,41 +1072,27 @@ const HEAT = {
   BLUE: [[.28,.5,1],[.18,.32,.7],[.35,.66,.8],[.45,.5,.9],[.22,.7,.6],[.4,.3,.7],[.12,.5,.5]],
   YEL:  [[.7,.5,1],[.82,.36,.8],[.62,.64,.85],[.55,.5,.9],[.78,.7,.7],[.66,.3,.6],[.88,.52,.6]]
 };
+// Build the tilted 3D pitch with occupancy blooms laid on its surface.
 function drawHeat(){
-  const cv=document.getElementById('heatCanvas'); const ctx=cv.getContext('2d');
-  const W=cv.width, H=cv.height, pad=24;
-  ctx.clearRect(0,0,W,H);
-  // pitch base
-  ctx.fillStyle='#0c5c2e'; ctx.globalAlpha=.18; ctx.fillRect(0,0,W,H); ctx.globalAlpha=1;
-  // mowed stripes
-  for(let i=0;i<10;i++){ ctx.fillStyle = i%2? 'rgba(255,255,255,.015)':'rgba(0,0,0,.06)';
-    ctx.fillRect(pad+i*(W-2*pad)/10,pad,(W-2*pad)/10,H-2*pad); }
-  // occupancy blooms
-  const bloom=(pts,color)=>{
-    pts.forEach(([fx,fy,w])=>{
-      const x=pad+fx*(W-2*pad), y=pad+fy*(H-2*pad), r=120*w;
-      const g=ctx.createRadialGradient(x,y,0,x,y,r);
-      g.addColorStop(0,color+'cc'); g.addColorStop(.5,color+'55'); g.addColorStop(1,color+'00');
-      ctx.fillStyle=g; ctx.beginPath(); ctx.arc(x,y,r,0,7); ctx.fill();
-    });
-  };
-  ctx.globalCompositeOperation='screen';
-  bloom(HEAT.BLUE, '#3b82f6'); bloom(HEAT.YEL, '#f5b62a');
-  ctx.globalCompositeOperation='source-over';
-  // pitch lines
-  ctx.strokeStyle='rgba(255,255,255,.5)'; ctx.lineWidth=2;
-  ctx.strokeRect(pad,pad,W-2*pad,H-2*pad);
-  ctx.beginPath(); ctx.moveTo(W/2,pad); ctx.lineTo(W/2,H-pad); ctx.stroke();
-  ctx.beginPath(); ctx.arc(W/2,H/2,64,0,7); ctx.stroke();
-  // penalty boxes
-  const bh=H*0.42, by=(H-bh)/2, bw=90;
-  ctx.strokeRect(pad,by,bw,bh); ctx.strokeRect(W-pad-bw,by,bw,bh);
+  const el=document.getElementById('pitch3d'); if(!el) return;
+  const lines =
+    `<span class="pl-line pl-mid"></span>`+
+    `<span class="pl-line pl-circle"></span>`+
+    `<span class="pl-line pl-spot"></span>`+
+    `<span class="pl-line pl-box l"></span><span class="pl-line pl-box r"></span>`+
+    `<span class="pl-line pl-goal l"></span><span class="pl-line pl-goal r"></span>`;
+  const blob=(pts,color)=> pts.map(([fx,fy,w])=>{
+    const s=(w*30).toFixed(1);
+    return `<span class="hb3" style="left:${(fx*100).toFixed(1)}%;top:${(fy*100).toFixed(1)}%;width:${s}%;padding-bottom:${s}%;`+
+      `background:radial-gradient(circle,${color}ee 0%,${color}66 45%,transparent 70%)"></span>`;
+  }).join('');
+  el.innerHTML = lines + blob(HEAT.BLUE,'#3b82f6') + blob(HEAT.YEL,'#f5b62a');
 }
 
 /* ============================================================
    TABS
    ============================================================ */
-const built={heat:false,team:false,players:false,board:false,awards:false,you:false};
+const built={heat:false,team:false,players:false,compare:false,board:false,awards:false,you:false};
 function showTab(name){
   document.querySelectorAll('.tabs button').forEach(b=>b.classList.toggle('on',b.dataset.tab===name));
   document.querySelectorAll('.panel').forEach(p=>p.classList.remove('on'));
@@ -988,6 +1100,7 @@ function showTab(name){
   if(name==='heat'){ drawHeat(); }
   if(name==='team'){ renderTeam(); }
   if(name==='players' && !built.players){ renderPlayers(); built.players=true; }
+  if(name==='compare' && !built.compare){ renderCompare(); built.compare=true; }
   if(name==='board' && !built.board){ renderBoard(); built.board=true; }
   if(name==='awards' && !built.awards){ renderAwards(); built.awards=true; }
   if(name==='you' && !built.you){ renderPersonal(); built.you=true; }
