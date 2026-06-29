@@ -1,0 +1,904 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>penta · Match Insights</title>
+<style>
+  /* ============================================================
+     penta — Post-Match Analysis & Insights
+     Self-contained: no build, no deps, no network. Vanilla JS.
+     ============================================================ */
+  :root{
+    --blue:#3b82f6; --yel:#f5b62a;
+    --blue-a:#1e5fd6; --blue-b:#4f93ff;
+    --yel-a:#ffc94d;  --yel-b:#f5a623;
+    --bg:#0e151f; --ink:#e8eef5; --sub:#8497ad; --mut:#7d8aa0;
+    --line:#223144; --line-hi:#33557a; --card-dk:#0d1620; --field:#0e1722;
+    --gold:#f5c451; --silver:#cfd8e3; --bronze:#d68a4f;
+    --gold-ink:#1a1205; --silver-ink:#10151c; --bronze-ink:#1a0f06;
+    --grid:#2a3a4f;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0}
+  body{
+    background:var(--bg); color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+    padding:26px 18px 60px; -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:1140px; margin:0 auto}
+  .num{font-variant-numeric:tabular-nums}
+
+  /* ---- hero / page head ---- */
+  .topbar{display:flex; align-items:center; gap:10px; margin:0 0 18px}
+  .brand{display:flex; align-items:center; gap:9px; font-weight:800; letter-spacing:.4px}
+  .brand .mark{width:26px;height:26px;border-radius:8px;display:grid;place-items:center;
+    background:linear-gradient(135deg,var(--blue),var(--yel)); color:#0b1019; font-weight:900; font-size:15px}
+  .brand small{color:var(--sub); font-weight:600; letter-spacing:1.4px; text-transform:uppercase; font-size:10px}
+  .topbar .when{margin-left:auto; color:var(--mut); font-size:12px; display:flex; align-items:center; gap:7px}
+  .live-dot{width:7px;height:7px;border-radius:50%;background:#36d399;box-shadow:0 0 0 3px rgba(54,211,153,.2)}
+
+  /* ---- match summary hero ---- */
+  .hero{
+    position:relative; overflow:hidden; border-radius:22px; padding:26px 26px 22px;
+    background:linear-gradient(165deg,#121b27 0%,#0b1019 100%);
+    border:1px solid rgba(255,255,255,.06); box-shadow:0 14px 40px rgba(0,0,0,.4);
+    margin:0 0 14px;
+  }
+  .hero .hb{position:absolute; width:340px;height:340px;border-radius:50%;filter:blur(60px);opacity:.16;pointer-events:none}
+  .hero .hb1{background:var(--blue); top:-150px; left:-70px; animation:drift1 14s ease-in-out infinite}
+  .hero .hb2{background:var(--yel);  bottom:-160px; right:-70px; animation:drift2 16s ease-in-out infinite}
+  .hero-grid{position:relative; z-index:1; display:grid; grid-template-columns:1fr auto 1fr; align-items:center; gap:14px}
+  .side{display:flex; flex-direction:column; align-items:center; gap:6px}
+  .side .tname{font-weight:800; letter-spacing:1.2px; font-size:13px}
+  .side .crest{width:54px;height:54px;border-radius:16px;display:grid;place-items:center;font-weight:900;font-size:22px;color:#0b1019}
+  .side.blue .crest{background:linear-gradient(135deg,var(--blue-a),var(--blue-b))}
+  .side.yel  .crest{background:linear-gradient(135deg,var(--yel-a),var(--yel-b))}
+  .side .poss{font-size:11px;color:var(--mut)}
+  .score{display:flex; align-items:center; gap:14px}
+  .score .n{font-size:62px; font-weight:800; line-height:1}
+  .score .n.blue{color:var(--blue)} .score .n.yel{color:var(--yel)}
+  .score .dash{color:var(--mut); font-size:34px; font-weight:300}
+  .result{margin-top:6px; text-align:center; color:var(--sub); font-size:12px; letter-spacing:1.4px; text-transform:uppercase; font-weight:700}
+  .hero-meta{position:relative; z-index:1; display:flex; flex-wrap:wrap; gap:10px; margin-top:20px}
+  .mvp{display:flex; align-items:center; gap:11px; padding:11px 14px; border-radius:14px;
+    background:linear-gradient(180deg,#19232f,#131c27); border:1px solid var(--line)}
+  .mvp .star{width:34px;height:34px;border-radius:11px;display:grid;place-items:center;background:var(--gold);color:var(--gold-ink);font-weight:900}
+  .mvp .l{font-size:9.5px;letter-spacing:1.6px;text-transform:uppercase;color:var(--mut);font-weight:700}
+  .mvp .v{font-weight:800;font-size:15px}
+  .mvp .v small{color:var(--sub);font-weight:600;font-size:11px;margin-left:4px}
+  .chips{display:flex; flex-wrap:wrap; gap:8px; margin-left:auto}
+  .stat-chip{padding:9px 13px;border-radius:13px;background:var(--card-dk);border:1px solid var(--line);min-width:96px}
+  .stat-chip .l{font-size:9px;letter-spacing:1.4px;text-transform:uppercase;color:var(--mut);font-weight:700}
+  .stat-chip .v{font-weight:800;font-size:18px;margin-top:2px}
+  .stat-chip .v small{font-size:11px;color:var(--sub);font-weight:600;margin-left:2px}
+
+  /* ---- story recap ---- */
+  .story{border-radius:18px;padding:18px 20px;margin:0 0 16px;
+    background:linear-gradient(180deg,#19232f,#131c27);border:1px solid rgba(255,255,255,.05)}
+  .story h3{margin:0 0 8px;font-size:12px;letter-spacing:1.8px;text-transform:uppercase;color:var(--sub);font-weight:800}
+  .story p{margin:0;font-size:15px;line-height:1.65;color:#dbe6f2}
+  .story p b{color:#fff}
+
+  /* ---- tabs ---- */
+  .tabs{display:inline-flex; gap:4px; background:var(--card-dk); border:1px solid var(--line);
+    border-radius:14px; padding:5px; margin:0 0 20px; flex-wrap:wrap}
+  .tabs button{cursor:pointer;border:1px solid transparent;background:transparent;color:var(--sub);
+    font-size:13px;font-weight:700;padding:9px 16px;border-radius:10px;transition:color .2s,background .2s}
+  .tabs button.on{color:#fff;background:linear-gradient(180deg,#22354c,#18283a);border-color:var(--line-hi)}
+
+  .panel{display:none; animation:panelIn .4s ease both}
+  .panel.on{display:block}
+  @keyframes panelIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+  .card{background:linear-gradient(165deg,#121b27 0%,#0b1019 100%);border:1px solid rgba(255,255,255,.06);
+    border-radius:20px;padding:22px 24px 26px;box-shadow:0 14px 40px rgba(0,0,0,.4);max-width:1100px}
+  .card-h{font-size:19px;font-weight:800;letter-spacing:.2px}
+  .card-s{font-size:12px;color:var(--mut);margin:2px 0 16px}
+
+  /* ---- heatmaps ---- */
+  #heatCanvas{width:100%;height:auto;border-radius:12px;display:block;background:#0a1018}
+  .heat-leg{display:flex;gap:16px;margin-top:14px;font-size:12px;color:var(--sub)}
+  .heat-leg i{display:inline-block;width:22px;height:8px;border-radius:4px;margin-right:6px;vertical-align:middle}
+
+  /* ---- team analysis ---- */
+  #ta-dash{position:relative;overflow:hidden}
+  .ta-fx .tblob{position:absolute;width:300px;height:300px;border-radius:50%;filter:blur(55px);opacity:.13;pointer-events:none}
+  .tb1{background:var(--blue);top:-130px;left:-70px;animation:drift1 14s ease-in-out infinite}
+  .tb2{background:var(--yel);bottom:-130px;right:-70px;animation:drift2 16s ease-in-out infinite}
+  .ta-head{position:relative;z-index:1;display:flex;align-items:flex-start;gap:12px;margin-bottom:6px}
+  .ta-title{font-size:19px;font-weight:800}
+  .ta-sub{font-size:12px;color:var(--mut);margin:2px 0 0}
+  .ta-leg{margin-left:auto;display:flex;gap:7px}
+  .ta-chip,.fa-chip{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:700;color:var(--sub);
+    background:var(--card-dk);border:1px solid var(--line);border-radius:999px;padding:4px 10px}
+  .ta-chip i,.fa-chip i{width:9px;height:9px;border-radius:50%}
+  .ta-rows{position:relative;z-index:1}
+  .ta-row{margin:20px 0;animation:taIn .55s ease both}
+  @keyframes taIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+  .ta-mlabel{text-align:center;font-size:11px;font-weight:700;letter-spacing:1.6px;text-transform:uppercase;color:var(--sub);margin-bottom:8px}
+  .ta-line{display:grid;grid-template-columns:74px 1fr 74px;align-items:center;gap:14px}
+  .ta-num{font-size:25px;font-weight:800}
+  .ta-num.l{text-align:right} .ta-num.r{text-align:left}
+  .ta-num .u{font-size:12px;font-weight:600;color:var(--sub);margin-left:1px}
+  .ta-bar{position:relative;height:18px;border-radius:999px;background:var(--card-dk);border:1px solid var(--line);overflow:hidden;display:flex}
+  .ta-fill{height:100%;width:0;transition:width 1.05s cubic-bezier(.34,.02,.18,1)}
+  .ta-fill.b{background:linear-gradient(90deg,var(--blue-a),var(--blue-b))}
+  .ta-fill.y{margin-left:auto;background:linear-gradient(90deg,var(--yel-a),var(--yel-b))}
+  .ta-fill.win{box-shadow:0 0 14px var(--g)}
+  .ta-meet{position:absolute;top:50%;left:50%;width:3px;height:24px;border-radius:2px;background:var(--ink);
+    transform:translate(-50%,-50%);box-shadow:0 0 8px rgba(255,255,255,.55);opacity:0;
+    transition:left 1.05s cubic-bezier(.34,.02,.18,1),opacity .4s}
+
+  /* ---- player stats ---- */
+  .fa-head{display:flex;align-items:flex-start;gap:12px}
+  .fa-title{font-size:19px;font-weight:800}
+  .fa-sub{font-size:12px;color:var(--mut);margin:2px 0 0}
+  .fa-leg{margin-left:auto;display:flex;gap:7px}
+  .seg{position:relative;display:inline-flex;background:var(--card-dk);border:1px solid var(--line);
+    border-radius:13px;padding:4px;gap:2px;margin:16px 0 18px;flex-wrap:wrap}
+  .seg-ind{position:absolute;top:4px;bottom:4px;left:4px;width:0;border-radius:10px;z-index:0;
+    background:linear-gradient(180deg,#22354c,#18283a);border:1px solid var(--line-hi);box-shadow:0 2px 8px rgba(0,0,0,.3);
+    transition:left .3s cubic-bezier(.4,.05,.2,1),width .3s cubic-bezier(.4,.05,.2,1)}
+  .seg-btn{position:relative;z-index:1;cursor:pointer;padding:8px 15px;font-size:12.5px;font-weight:600;color:var(--sub);
+    border-radius:10px;transition:color .2s;white-space:nowrap;user-select:none}
+  .seg-btn.on{color:#fff}
+  .fa-grid,.aw-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(244px,1fr));gap:14px}
+  .pc{position:relative;border-radius:16px;padding:15px 16px 16px;overflow:hidden;
+    background:linear-gradient(180deg,#19232f,#131c27);border:1px solid rgba(255,255,255,.05);
+    box-shadow:0 6px 18px rgba(0,0,0,.25);animation:pcIn .45s ease both;transition:transform .2s,border-color .2s}
+  .pc::before{content:'';position:absolute;left:0;top:0;height:100%;width:4px;background:var(--ac);z-index:2}
+  .pc:hover{transform:translateY(-3px);border-color:var(--ac)}
+  @keyframes pcIn{from{opacity:0;transform:translateY(10px) scale(.985)}to{opacity:1;transform:none}}
+  .pc-fx .blob{position:absolute;width:150px;height:150px;border-radius:50%;
+    background:radial-gradient(circle,var(--ac) 0%,transparent 68%);filter:blur(16px);opacity:0}
+  .pc-fx .b1{animation:pdrift1 9s ease-in-out infinite}
+  .pc-fx .b2{animation:pdrift2 12s ease-in-out infinite;animation-delay:-3s}
+  .pc-fx .b3{animation:pdrift3 15s ease-in-out infinite;animation-delay:-6s}
+  .rk{position:absolute;top:13px;right:14px;font-size:10px;font-weight:800;padding:2px 8px;border-radius:8px;z-index:3}
+  .rk.g1{background:var(--gold);color:var(--gold-ink)}
+  .rk.g2{background:var(--silver);color:var(--silver-ink)}
+  .rk.g3{background:var(--bronze);color:var(--bronze-ink)}
+  .pc-top{position:relative;z-index:1;display:flex;align-items:center;gap:8px;margin-bottom:12px}
+  .pc-dot{width:11px;height:11px;border-radius:50%;background:var(--ac);flex:none;
+    box-shadow:0 0 0 3px color-mix(in srgb,var(--ac) 22%,transparent);animation:dotPulse 2.4s ease-in-out infinite}
+  .pc-name{font-weight:800;font-size:16px;letter-spacing:.2px}
+  .pc-min{margin-left:auto;font-size:10px;color:var(--mut);background:var(--field);border-radius:999px;padding:3px 8px}
+  .pc-feat{position:relative;z-index:1;display:flex;align-items:baseline;gap:6px;margin-bottom:2px}
+  .pc-big{font-size:30px;font-weight:800;line-height:1;color:var(--ac)}
+  .pc-unit{font-size:12px;color:var(--sub);font-weight:600}
+  .pc-flab{font-size:10px;color:var(--mut);text-transform:uppercase;letter-spacing:1px;font-weight:700;margin-left:auto}
+  .pc-radar{position:relative;z-index:1;display:flex;justify-content:center;margin:8px 0 2px}
+  .pc-ring{position:absolute;top:50%;left:50%;width:96px;height:96px;border-radius:50%;border:1.5px solid var(--ac);
+    transform:translate(-50%,-50%) scale(.4);opacity:0;animation:ringPulse 3.2s ease-out infinite}
+  .radar-poly{animation:radarIn .55s cubic-bezier(.2,.8,.2,1) both;transform-origin:center}
+
+  /* ---- awards ---- */
+  .aw{position:relative;overflow:hidden;border-radius:16px;padding:16px;
+    background:linear-gradient(180deg,#19232f,#131c27);border:1px solid rgba(255,255,255,.05);
+    box-shadow:0 6px 18px rgba(0,0,0,.25);animation:pcIn .45s ease both}
+  .aw::before{content:'';position:absolute;left:0;top:0;height:100%;width:4px;background:var(--ac);z-index:2}
+  .aw-ico{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;font-size:20px;
+    background:color-mix(in srgb,var(--ac) 18%,transparent);border:1px solid color-mix(in srgb,var(--ac) 40%,transparent)}
+  .aw-top{display:flex;align-items:center;gap:11px;margin-bottom:12px}
+  .aw-ttl{font-size:9.5px;letter-spacing:1.6px;text-transform:uppercase;color:var(--mut);font-weight:800}
+  .aw-win{font-weight:800;font-size:16px;margin-top:1px}
+  .aw-val{display:flex;align-items:baseline;gap:5px}
+  .aw-val .v{font-size:26px;font-weight:800;color:var(--ac)}
+  .aw-val .u{font-size:12px;color:var(--sub);font-weight:600}
+  .aw-why{font-size:12px;color:var(--mut);margin-top:8px;line-height:1.5}
+
+  /* ---- your game (personal) ---- */
+  .pg-top{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:6px}
+  .pg-top .card-h{margin-right:auto}
+  select#pgPick{background:var(--field);color:var(--ink);border:1px solid var(--line-hi);border-radius:12px;
+    padding:9px 14px;font-size:14px;font-weight:700;cursor:pointer;outline:none}
+  .pg-body{display:grid;grid-template-columns:200px 1fr;gap:22px;align-items:start;margin-top:6px}
+  .pg-radar{display:flex;justify-content:center;position:relative}
+  .pg-stats{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .pg-stat{background:var(--card-dk);border:1px solid var(--line);border-radius:13px;padding:12px 14px}
+  .pg-stat .l{font-size:9.5px;letter-spacing:1.4px;text-transform:uppercase;color:var(--mut);font-weight:700}
+  .pg-stat .v{font-weight:800;font-size:22px;margin-top:3px}
+  .pg-stat .v small{font-size:11px;color:var(--sub);font-weight:600;margin-left:2px}
+  .pg-stat .rank{font-size:11px;font-weight:700;margin-top:5px}
+  .pg-rank-good{color:#36d399} .pg-rank-mid{color:var(--yel)} .pg-rank-low{color:var(--sub)}
+  .pg-insight{grid-column:1/-1;margin-top:4px;display:flex;flex-direction:column;gap:10px}
+  .pg-note{border-radius:13px;padding:13px 15px;font-size:14px;line-height:1.55}
+  .pg-note.good{background:rgba(54,211,153,.08);border:1px solid rgba(54,211,153,.25)}
+  .pg-note.tip{background:rgba(245,182,42,.08);border:1px solid rgba(245,182,42,.25)}
+  .pg-note .lab{display:block;font-size:9.5px;letter-spacing:1.6px;text-transform:uppercase;font-weight:800;margin-bottom:4px}
+  .pg-note.good .lab{color:#36d399} .pg-note.tip .lab{color:var(--yel)}
+  .pg-note b{color:#fff}
+
+  /* ---- jetson reveal overlay ---- */
+  #reveal{position:fixed;inset:0;z-index:50;background:radial-gradient(circle at 50% 40%,#13202e,#080d14 75%);
+    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:22px;transition:opacity .6s ease}
+  #reveal.gone{opacity:0;pointer-events:none}
+  .rv-mark{width:64px;height:64px;border-radius:18px;display:grid;place-items:center;font-weight:900;font-size:30px;color:#0b1019;
+    background:linear-gradient(135deg,var(--blue),var(--yel));box-shadow:0 0 40px rgba(79,147,255,.4);animation:pulse 1.6s ease-in-out infinite}
+  .rv-scan{position:relative;width:280px;height:158px;border-radius:14px;overflow:hidden;border:1px solid var(--line);
+    background:linear-gradient(180deg,#0f1a26,#0a121b)}
+  .rv-scan .pitch{position:absolute;inset:14px;border:1.5px solid rgba(255,255,255,.12);border-radius:8px}
+  .rv-scan .pitch::before{content:'';position:absolute;left:50%;top:0;bottom:0;width:1.5px;background:rgba(255,255,255,.12)}
+  .rv-scan .pitch::after{content:'';position:absolute;left:50%;top:50%;width:34px;height:34px;border:1.5px solid rgba(255,255,255,.12);
+    border-radius:50%;transform:translate(-50%,-50%)}
+  .rv-scan .beam{position:absolute;top:0;bottom:0;width:60px;background:linear-gradient(90deg,transparent,rgba(79,147,255,.45),transparent);
+    animation:beam 1.5s linear infinite}
+  .rv-txt{font-size:14px;color:var(--sub);font-weight:600;letter-spacing:.3px}
+  .rv-txt b{color:var(--ink)}
+  .rv-prog{width:280px;height:5px;border-radius:999px;background:var(--card-dk);overflow:hidden}
+  .rv-prog i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--blue),var(--yel));border-radius:999px;transition:width .25s linear}
+
+  /* ---- keyframes ---- */
+  @keyframes drift1{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(46px,34px) scale(1.12)}}
+  @keyframes drift2{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(-46px,-34px) scale(1.14)}}
+  @keyframes pdrift1{0%{transform:translate(-30%,110%) scale(.6);opacity:.05}50%{transform:translate(55%,20%) scale(1.05);opacity:.20}100%{transform:translate(-30%,110%) scale(.6);opacity:.05}}
+  @keyframes pdrift2{0%{transform:translate(90%,90%) scale(.7);opacity:.04}50%{transform:translate(10%,-15%) scale(1);opacity:.16}100%{transform:translate(90%,90%) scale(.7);opacity:.04}}
+  @keyframes pdrift3{0%{transform:translate(40%,-20%) scale(.5);opacity:.04}50%{transform:translate(-15%,70%) scale(.95);opacity:.14}100%{transform:translate(40%,-20%) scale(.5);opacity:.04}}
+  @keyframes dotPulse{0%,100%{box-shadow:0 0 0 3px color-mix(in srgb,var(--ac) 22%,transparent)}50%{box-shadow:0 0 0 6px color-mix(in srgb,var(--ac) 6%,transparent)}}
+  @keyframes ringPulse{0%{transform:translate(-50%,-50%) scale(.4);opacity:.35}70%{opacity:0}100%{transform:translate(-50%,-50%) scale(1.25);opacity:0}}
+  @keyframes radarIn{from{transform:scale(.15);opacity:0}to{transform:scale(1);opacity:1}}
+  @keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.08)}}
+  @keyframes beam{0%{left:-60px}100%{left:280px}}
+
+  @media (max-width:680px){
+    .hero-grid{grid-template-columns:1fr auto 1fr}
+    .score .n{font-size:46px}
+    .chips{margin-left:0;width:100%}
+    .pg-body{grid-template-columns:1fr}
+    .pg-radar{margin-bottom:6px}
+  }
+  /* ---- landing ---- */
+  .pnav{position:sticky;top:0;z-index:30;backdrop-filter:blur(12px);background:rgba(14,21,31,.78);border-bottom:1px solid var(--line)}
+  .pnav-in{max-width:1140px;margin:0 auto;padding:13px 18px;display:flex;align-items:center;gap:14px}
+  .pnav-links{margin-left:auto;display:flex;align-items:center;gap:22px}
+  .pnav-links a{color:var(--sub);font-size:13px;font-weight:600;text-decoration:none;cursor:pointer;transition:color .2s}
+  .pnav-links a:hover{color:var(--ink)}
+  .btn{display:inline-flex;align-items:center;gap:7px;cursor:pointer;border:0;border-radius:12px;padding:10px 18px;font-size:13px;font-weight:700;color:#0b1019;background:linear-gradient(135deg,var(--blue-b),var(--yel));transition:transform .15s,filter .2s;text-decoration:none}
+  .btn:hover{transform:translateY(-1px);filter:brightness(1.06)}
+  .btn.ghost{background:transparent;color:var(--ink);border:1px solid var(--line-hi)}
+  .lhero{position:relative;overflow:hidden;padding:72px 18px 60px}
+  .lhero .hb{position:absolute;width:460px;height:460px;border-radius:50%;filter:blur(70px);opacity:.18;pointer-events:none}
+  .lhero .hb1{background:var(--blue);top:-200px;left:-120px;animation:tdrift1 16s ease-in-out infinite}
+  .lhero .hb2{background:var(--yel);top:-120px;right:-140px;animation:tdrift2 18s ease-in-out infinite}
+  .lhero-in{position:relative;z-index:1;text-align:center;max-width:1140px;margin:0 auto}
+  .pill{display:inline-flex;align-items:center;gap:8px;font-size:11px;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;color:var(--sub);background:var(--card-dk);border:1px solid var(--line);border-radius:999px;padding:7px 14px}
+  .pill .live-dot{width:7px;height:7px;border-radius:50%;background:#36d399;box-shadow:0 0 0 3px rgba(54,211,153,.2)}
+  .lhero h1{font-size:58px;line-height:1.02;font-weight:800;letter-spacing:-.5px;margin:22px 0 0}
+  .lhero h1 .grad{background:linear-gradient(120deg,var(--blue-b),var(--yel));-webkit-background-clip:text;background-clip:text;color:transparent}
+  .lhero p.lead{max-width:620px;margin:18px auto 0;font-size:18px;line-height:1.6;color:var(--sub)}
+  .lhero .cta{margin-top:30px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+  .sec{padding:54px 18px;max-width:1140px;margin:0 auto}
+  .sec-h{text-align:center;margin-bottom:34px}
+  .sec-eyebrow{font-size:11px;font-weight:800;letter-spacing:1.8px;text-transform:uppercase;color:var(--blue-b)}
+  .sec-title{font-size:32px;font-weight:800;letter-spacing:-.3px;margin:8px 0 0}
+  .sec-sub{font-size:15px;color:var(--sub);margin:10px auto 0;max-width:560px}
+  .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+  .step{position:relative;overflow:hidden;border-radius:18px;padding:24px 22px;background:linear-gradient(180deg,#19232f,#131c27);border:1px solid rgba(255,255,255,.05)}
+  .step .n{width:34px;height:34px;border-radius:11px;display:grid;place-items:center;font-weight:900;font-size:15px;color:#0b1019;background:linear-gradient(135deg,var(--blue-b),var(--yel))}
+  .step h3{margin:14px 0 6px;font-size:17px;font-weight:800}
+  .step p{margin:0;font-size:14px;line-height:1.55;color:var(--sub)}
+  .feats{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+  .feat{border-radius:16px;padding:20px;background:var(--card-dk);border:1px solid var(--line)}
+  .feat .ic{font-size:22px}
+  .feat h4{margin:12px 0 5px;font-size:15px;font-weight:800}
+  .feat p{margin:0;font-size:13px;line-height:1.5;color:var(--mut)}
+  .pfoot{border-top:1px solid var(--line);margin-top:40px;padding:28px 18px;color:var(--mut);font-size:12.5px}
+  .pfoot-in{max-width:1140px;margin:0 auto;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+  .insights-sec{max-width:1140px;margin:0 auto;padding:54px 18px}
+  @media (max-width:760px){.steps,.feats{grid-template-columns:1fr}.lhero h1{font-size:40px}.pnav-links a{display:none}}
+  @media (prefers-reduced-motion:reduce){
+    *{animation:none!important;transition:none!important}
+  }
+</style>
+</head>
+<body>
+  <!-- ====== NAV ====== -->
+  <header class="pnav"><div class="pnav-in">
+    <div class="brand"><span class="mark">p</span><span>penta <small>match insights</small></span></div>
+    <nav class="pnav-links">
+      <a onclick="document.getElementById('how').scrollIntoView({behavior:'smooth'})">How it works</a>
+      <a onclick="document.getElementById('insights').scrollIntoView({behavior:'smooth'})">Insights</a>
+      <button class="btn" onclick="document.getElementById('insights').scrollIntoView({behavior:'smooth'})">See match insights</button>
+    </nav>
+  </div></header>
+
+  <!-- ====== LANDING HERO ====== -->
+  <section class="lhero"><span class="hb hb1"></span><span class="hb hb2"></span>
+    <div class="lhero-in">
+      <span class="pill"><span class="live-dot"></span>Powered by on-site Jetson AI</span>
+      <h1>Every match,<br><span class="grad">analyzed.</span></h1>
+      <p class="lead">Play your 5-a-side game at penta and walk away with pro-level insights — heatmaps, team head-to-head, player radars and awards, generated automatically from the footage.</p>
+      <div class="cta">
+        <button class="btn" onclick="document.getElementById('insights').scrollIntoView({behavior:'smooth'})">See your match insights ↓</button>
+        <button class="btn ghost" onclick="document.getElementById('how').scrollIntoView({behavior:'smooth'})">How it works</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====== HOW IT WORKS ====== -->
+  <section id="how" class="sec">
+    <div class="sec-h"><div class="sec-eyebrow">How it works</div>
+      <h2 class="sec-title">From kickoff to insights in three steps</h2>
+      <p class="sec-sub">No wearables. No manual tagging. Just play — the rest is automatic.</p></div>
+    <div class="steps">
+      <div class="step"><div class="n">1</div><h3>Play your match</h3><p>Just book a pitch and play. Ceiling cameras capture every minute — no wearables, no setup.</p></div>
+      <div class="step"><div class="n">2</div><h3>Jetson analyzes the footage</h3><p>An on-site NVIDIA Jetson tracks every player and the ball, turning the video into rich match data.</p></div>
+      <div class="step"><div class="n">3</div><h3>Get your insights</h3><p>Minutes later your match story, heatmaps, awards and personal stats are ready to explore.</p></div>
+    </div>
+  </section>
+
+  <!-- ====== FEATURES ====== -->
+  <section class="sec" style="padding-top:0">
+    <div class="sec-h"><div class="sec-eyebrow">What you get</div><h2 class="sec-title">Insights that make every game count</h2></div>
+    <div class="feats">
+      <div class="feat"><div class="ic">🔥</div><h4>Occupancy heatmaps</h4><p>See exactly where each side controlled the pitch.</p></div>
+      <div class="feat"><div class="ic">⚔️</div><h4>Team head-to-head</h4><p>Possession, passes and more, side by side.</p></div>
+      <div class="feat"><div class="ic">🎯</div><h4>Player radars</h4><p>Rank the squad by distance, speed, passing or possession.</p></div>
+      <div class="feat"><div class="ic">🏅</div><h4>Match awards</h4><p>MVP, top speed, engine, playmaker — auto-selected.</p></div>
+      <div class="feat"><div class="ic">📈</div><h4>Your performance</h4><p>Personal stats, squad rank and tips to improve.</p></div>
+      <div class="feat"><div class="ic">⚡</div><h4>Ready in minutes</h4><p>Insights land on your phone right after full time.</p></div>
+    </div>
+  </section>
+
+  <!-- ====== MATCH INSIGHTS ====== -->
+  <section id="insights" class="insights-sec">
+    <div class="sec-h"><div class="sec-eyebrow">Post-match · analyzed by Jetson</div>
+      <h2 class="sec-title">Match insights</h2>
+      <p class="sec-sub">Occupancy, team head-to-head, and a per-player breakdown — straight from the footage.</p></div>
+
+    <!-- ====== MATCH SUMMARY HERO ====== -->
+    <section class="hero">
+      <span class="hb hb1"></span><span class="hb hb2"></span>
+      <div class="hero-grid">
+        <div class="side blue">
+          <div class="crest">B</div>
+          <div class="tname" style="color:var(--blue)">BLUE</div>
+          <div class="poss" id="possBlue">— poss</div>
+        </div>
+        <div style="text-align:center">
+          <div class="score">
+            <span class="n blue num" id="scoreBlue">0</span>
+            <span class="dash">–</span>
+            <span class="n yel num" id="scoreYel">0</span>
+          </div>
+          <div class="result" id="resultTxt">Full time</div>
+        </div>
+        <div class="side yel">
+          <div class="crest">Y</div>
+          <div class="tname" style="color:var(--yel)">YEL</div>
+          <div class="poss" id="possYel">— poss</div>
+        </div>
+      </div>
+      <div class="hero-meta">
+        <div class="mvp">
+          <div class="star">★</div>
+          <div>
+            <div class="l">Player of the match</div>
+            <div class="v" id="mvpName">—<small id="mvpWhy"></small></div>
+          </div>
+        </div>
+        <div class="chips" id="heroChips"></div>
+      </div>
+    </section>
+
+    <!-- ====== STORY RECAP ====== -->
+    <section class="story">
+      <h3>The story of the match</h3>
+      <p id="storyTxt">—</p>
+    </section>
+
+    <!-- ====== TABS ====== -->
+    <nav class="tabs" id="tabs">
+      <button data-tab="heat" class="on">Heatmaps</button>
+      <button data-tab="team">Team</button>
+      <button data-tab="players">Players</button>
+      <button data-tab="awards">Awards</button>
+      <button data-tab="you">Your game</button>
+    </nav>
+
+    <!-- HEATMAPS -->
+    <section id="tab-heat" class="panel on">
+      <div class="card">
+        <div class="card-h">Occupancy heatmaps</div>
+        <div class="card-s">Where each side spent its time on the pitch · team occupancy</div>
+        <canvas id="heatCanvas" width="1040" height="620"></canvas>
+        <div class="heat-leg">
+          <span><i style="background:linear-gradient(90deg,transparent,var(--blue))"></i>BLUE occupancy</span>
+          <span><i style="background:linear-gradient(90deg,transparent,var(--yel))"></i>YEL occupancy</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- TEAM -->
+    <section id="tab-team" class="panel">
+      <div class="card" id="ta-dash">
+        <div class="ta-fx"><span class="tblob tb1"></span><span class="tblob tb2"></span></div>
+        <div class="ta-head">
+          <div>
+            <div class="ta-title">Team analysis</div>
+            <div class="ta-sub">BLUE vs YEL · head to head</div>
+          </div>
+          <div class="ta-leg">
+            <span class="ta-chip"><i style="background:var(--blue)"></i>BLUE</span>
+            <span class="ta-chip"><i style="background:var(--yel)"></i>YEL</span>
+          </div>
+        </div>
+        <div class="ta-rows" id="ta-rows"></div>
+      </div>
+    </section>
+
+    <!-- PLAYERS -->
+    <section id="tab-players" class="panel">
+      <div class="card" id="fa-dash">
+        <div class="fa-head">
+          <div>
+            <div class="fa-title">Player stats</div>
+            <div class="fa-sub">Tap a metric to rank the squad</div>
+          </div>
+          <div class="fa-leg">
+            <span class="fa-chip"><i style="background:var(--blue)"></i>BLUE</span>
+            <span class="fa-chip"><i style="background:var(--yel)"></i>YEL</span>
+          </div>
+        </div>
+        <div class="seg" id="fa-seg"><div class="seg-ind" id="fa-ind"></div></div>
+        <div class="fa-grid" id="fa-grid"></div>
+      </div>
+    </section>
+
+    <!-- AWARDS -->
+    <section id="tab-awards" class="panel">
+      <div class="card">
+        <div class="card-h">Match awards</div>
+        <div class="card-s">Standout performers · auto-selected by Jetson from the match data</div>
+        <div class="aw-grid" id="aw-grid"></div>
+      </div>
+    </section>
+
+    <!-- YOUR GAME -->
+    <section id="tab-you" class="panel">
+      <div class="card">
+        <div class="pg-top">
+          <div class="card-h">Your game</div>
+          <select id="pgPick"></select>
+        </div>
+        <div class="card-s" id="pgSub">Your personal breakdown · how you ranked in the squad</div>
+        <div class="pg-body">
+          <div class="pg-radar" id="pgRadar"></div>
+          <div class="pg-stats" id="pgStats"></div>
+          <div class="pg-insight" id="pgInsight"></div>
+        </div>
+      </div>
+    </section>
+  </section>
+
+  <footer class="pfoot"><div class="pfoot-in">
+    <div class="brand"><span class="mark">p</span><span>penta</span></div>
+    <span>Post-match analysis &amp; insights · analyzed on-site by Jetson</span>
+  </div></footer>
+
+<script>
+/* ============================================================
+   MATCH — the Jetson analysis output (single source of truth).
+   Every section below derives from this object.
+   ============================================================ */
+const COL = { BLUE:'#3b82f6', YEL:'#f5b62a' };
+const MATCH = {
+  score: { BLUE:3, YEL:4 },          // final score
+  durationMin: 12,                    // match length (minutes)
+  team: {
+    // unit '' => integer; values are [BLUE, YEL]
+    metrics: [
+      { label:'Possession', unit:'%', BLUE:46.6, YEL:53.4 },
+      { label:'Passes',     unit:'',  BLUE:3,    YEL:3 },
+      { label:'Corners',    unit:'',  BLUE:0,    YEL:0 }
+    ]
+  },
+  // radar axes used by player + personal cards
+  radarAxes: [ ['dist','Dist'], ['top','Speed'], ['made','Pass'], ['poss','Poss'], ['touches','Touch'] ],
+  // selectable headline metrics for the Players tab
+  faMetrics: [ ['dist','Distance','m'], ['top','Top speed','m/s'], ['made','Passes',''], ['poss','Possession','s'] ],
+  players: [
+    { id:'BLUE1', team:'BLUE', dist:42.9, sprint:0.0, top:3.6, avg:1.4, mins:12, poss:0.5, touches:1, made:0, recv:1 },
+    { id:'BLUE2', team:'BLUE', dist:27.4, sprint:0.0, top:3.3, avg:0.9, mins:12, poss:1.1, touches:1, made:0, recv:0 },
+    { id:'BLUE3', team:'BLUE', dist:55.1, sprint:0.0, top:4.6, avg:1.8, mins:12, poss:2.3, touches:4, made:2, recv:0 },
+    { id:'BLUE4', team:'BLUE', dist:47.4, sprint:0.0, top:4.9, avg:1.6, mins:12, poss:0.9, touches:4, made:0, recv:2 },
+    { id:'BLUE5', team:'BLUE', dist:40.0, sprint:0.0, top:3.5, avg:1.3, mins:12, poss:2.9, touches:5, made:1, recv:0 },
+    { id:'YEL1',  team:'YEL',  dist:16.0, sprint:0.0, top:1.5, avg:0.5, mins:12, poss:0.0, touches:0, made:0, recv:0 },
+    { id:'YEL2',  team:'YEL',  dist:55.8, sprint:0.0, top:5.0, avg:1.9, mins:12, poss:0.1, touches:1, made:0, recv:0 },
+    { id:'YEL3',  team:'YEL',  dist:47.3, sprint:0.0, top:3.9, avg:1.6, mins:12, poss:2.9, touches:4, made:1, recv:0 },
+    { id:'YEL4',  team:'YEL',  dist:36.4, sprint:0.0, top:4.1, avg:1.2, mins:12, poss:3.8, touches:5, made:1, recv:1 },
+    { id:'YEL5',  team:'YEL',  dist:41.9, sprint:2.4, top:5.8, avg:1.4, mins:12, poss:4.4, touches:5, made:1, recv:2 }
+  ]
+};
+const P = MATCH.players;
+
+/* ---------- derive helpers ---------- */
+const fmt = (n,u) => {
+  const dec = (u==='%'||u==='m/s') || (n%1!==0);
+  return (dec ? (+n).toFixed(1) : Math.round(n));
+};
+const maxOf = k => Math.max(...P.map(p=>p[k]));
+const leader = k => P.reduce((a,b)=> b[k]>a[k]?b:a, P[0]);
+// rank of player p in metric k (1 = best), descending
+const rankOf = (p,k) => {
+  const sorted = [...P].sort((a,b)=>b[k]-a[k]);
+  return sorted.findIndex(x=>x.id===p.id)+1;
+};
+const ord = n => { const s=['th','st','nd','rd'], v=n%100; return n+(s[(v-20)%10]||s[v]||s[0]); };
+
+// composite MVP score: normalized blend of impact metrics
+function mvpScore(p){
+  const w = { dist:1, top:1, made:2, poss:1.5, touches:1, recv:0.5 };
+  let s=0;
+  for(const k in w){ const m=maxOf(k)||1; s += (p[k]/m)*w[k]; }
+  return s;
+}
+const MVP = P.reduce((a,b)=> mvpScore(b)>mvpScore(a)?b:a, P[0]);
+
+/* ============================================================
+   HERO
+   ============================================================ */
+function renderHero(){
+  document.getElementById('scoreBlue').dataset.to = MATCH.score.BLUE;
+  document.getElementById('scoreYel').dataset.to  = MATCH.score.YEL;
+  const b=MATCH.score.BLUE, y=MATCH.score.YEL;
+  const res = b>y ? 'BLUE win' : y>b ? 'YEL win' : 'Draw';
+  document.getElementById('resultTxt').textContent = `Full time · ${res} · ${MATCH.durationMin} min`;
+  const poss = MATCH.team.metrics.find(m=>m.label==='Possession');
+  document.getElementById('possBlue').textContent = poss.BLUE+'% poss';
+  document.getElementById('possYel').textContent  = poss.YEL+'% poss';
+  document.getElementById('mvpName').firstChild.textContent = MVP.id+' ';
+  document.getElementById('mvpWhy').textContent =
+    `${fmt(MVP.dist,'m')}m · ${fmt(MVP.top,'m/s')} m/s · ${MVP.made} pass`;
+
+  const totalDist = P.reduce((s,p)=>s+p.dist,0);
+  const fastest = leader('top');
+  const sprints = P.reduce((s,p)=>s+p.sprint,0);
+  const chips = [
+    { l:'Top speed', v:fmt(fastest.top,'m/s'), u:'m/s' },
+    { l:'Total distance', v:Math.round(totalDist), u:'m' },
+    { l:'Sprints', v:fmt(sprints,''), u:'' },
+    { l:'Possession', v:poss.YEL>poss.BLUE?poss.YEL:poss.BLUE, u:'%' }
+  ];
+  document.getElementById('heroChips').innerHTML = chips.map(c=>
+    `<div class="stat-chip"><div class="l">${c.l}</div><div class="v num">${c.v}${c.u?`<small>${c.u}</small>`:''}</div></div>`
+  ).join('');
+}
+
+/* ============================================================
+   STORY RECAP (templated)
+   ============================================================ */
+function renderStory(){
+  const b=MATCH.score.BLUE, y=MATCH.score.YEL;
+  const winner = b>y?'BLUE':y>b?'YEL':null;
+  const poss = MATCH.team.metrics.find(m=>m.label==='Possession');
+  const possTeam = poss.YEL>poss.BLUE?'YEL':'BLUE';
+  const possVal = Math.max(poss.YEL,poss.BLUE);
+  const fastest = leader('top');
+  const engine = leader('dist');
+  const playmaker = leader('made');
+
+  let s='';
+  if(winner){
+    s += `<b>${winner}</b> edged it <b>${Math.max(b,y)}–${Math.min(b,y)}</b> after ${MATCH.durationMin} hard-fought minutes. `;
+  } else {
+    s += `Neither side could be separated — <b>${b}–${y}</b> after ${MATCH.durationMin} minutes. `;
+  }
+  s += `${possTeam} controlled the tempo with <b>${possVal}%</b> of possession. `;
+  s += `<b>${fastest.id}</b> was the quickest on the pitch, hitting <b>${fmt(fastest.top,'m/s')} m/s</b>, `;
+  s += `while <b>${engine.id}</b> covered the most ground at <b>${Math.round(engine.dist)} m</b>. `;
+  if(playmaker.made>0) s += `<b>${playmaker.id}</b> pulled the strings with ${playmaker.made} completed pass${playmaker.made>1?'es':''}. `;
+  s += `Pick of the bunch, though, was <b>${MVP.id}</b> — Jetson's player of the match.`;
+  document.getElementById('storyTxt').innerHTML = s;
+}
+
+/* ============================================================
+   COUNT-UP util
+   ============================================================ */
+const REDUCE = window.matchMedia('(prefers-reduced-motion:reduce)').matches;
+function fin(to,dec){ return dec ? (+to).toFixed(1) : String(Math.round(to)); }
+function countUp(el, to, dur, dec){
+  if(REDUCE || !el){ if(el) el.textContent = fin(to,dec); return; }
+  let start = null;
+  function step(now){
+    if(start===null) start=now;
+    let k = (now-start)/dur;
+    if(!(k>=0)) k=1;                 // guard against NaN / clock anomalies
+    k = Math.min(1,k);
+    const e = 1-Math.pow(1-k,3);
+    el.textContent = dec ? Math.max(0,to*e).toFixed(1) : String(Math.round(Math.max(0,to*e)));
+    if(k<1) requestAnimationFrame(step); else el.textContent = fin(to,dec);
+  }
+  el.textContent = dec ? (0).toFixed(1) : '0';
+  requestAnimationFrame(step);
+}
+
+/* ============================================================
+   TEAM ANALYSIS
+   ============================================================ */
+let teamBuilt=false;
+function renderTeam(){
+  if(teamBuilt) return; teamBuilt=true;
+  const wrap=document.getElementById('ta-rows');
+  wrap.innerHTML='';
+  MATCH.team.metrics.forEach((m,idx)=>{
+    const b=m.BLUE, y=m.YEL, tot=b+y;
+    const bp = tot>0 ? (b/tot*100) : 50;
+    const yp = tot>0 ? (y/tot*100) : 50;
+    const u = m.unit ? `<span class="u">${m.unit}</span>` : '';
+    const row=document.createElement('div');
+    row.className='ta-row'; row.style.animationDelay=(idx*0.12)+'s';
+    row.innerHTML =
+      `<div class="ta-mlabel">${m.label}</div>`+
+      `<div class="ta-line">`+
+        `<div class="ta-num l num" style="color:${COL.BLUE}"><span>0</span>${u}</div>`+
+        `<div class="ta-bar">`+
+          `<div class="ta-fill b${b>=y&&tot>0?' win':''}" style="--g:${COL.BLUE}"></div>`+
+          `<div class="ta-fill y${y>b&&tot>0?' win':''}" style="--g:${COL.YEL}"></div>`+
+          `<div class="ta-meet"></div>`+
+        `</div>`+
+        `<div class="ta-num r num" style="color:${COL.YEL}"><span>0</span>${u}</div>`+
+      `</div>`;
+    wrap.appendChild(row);
+    const fb=row.querySelector('.ta-fill.b'), fy=row.querySelector('.ta-fill.y'),
+          meet=row.querySelector('.ta-meet'),
+          nl=row.querySelector('.ta-num.l span'), nr=row.querySelector('.ta-num.r span');
+    const dec = m.unit==='%' || (b%1!==0)||(y%1!==0);
+    setTimeout(()=>{
+      fb.style.width=bp+'%'; fy.style.width=yp+'%';
+      if(tot>0){ meet.style.left=bp+'%'; meet.style.opacity=.85; }
+      countUp(nl,b,900,dec); countUp(nr,y,900,dec);
+    }, 90+idx*130);
+  });
+}
+
+/* ============================================================
+   RADAR (shared by player cards + personal)
+   ============================================================ */
+function radarSVG(p, activeKey, size){
+  size = size||132; const c=size/2, R=size*0.318;
+  const axes = MATCH.radarAxes;
+  const n=axes.length;
+  let grid='', spokes='', pts=[], dots='', labels='';
+  // grid rings at 50% & 100%
+  [0.5,1].forEach(r=>{
+    let pp=[];
+    for(let i=0;i<n;i++){ const a=-Math.PI/2 + i*2*Math.PI/n;
+      pp.push((c+Math.cos(a)*R*r).toFixed(1)+','+(c+Math.sin(a)*R*r).toFixed(1)); }
+    grid += `<polygon points="${pp.join(' ')}" fill="none" stroke="#2a3a4f" stroke-width="1"/>`;
+  });
+  for(let i=0;i<n;i++){
+    const [k,lab]=axes[i];
+    const a=-Math.PI/2 + i*2*Math.PI/n;
+    const mx=maxOf(k)||1; const rr=R*Math.max(0.06,p[k]/mx);
+    const x=c+Math.cos(a)*rr, y=c+Math.sin(a)*rr;
+    pts.push(x.toFixed(1)+','+y.toFixed(1));
+    spokes += `<line x1="${c}" y1="${c}" x2="${(c+Math.cos(a)*R).toFixed(1)}" y2="${(c+Math.sin(a)*R).toFixed(1)}" stroke="#223144" stroke-width="1"/>`;
+    const act = k===activeKey;
+    dots += `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${act?4:2.5}" fill="${act?'#fff':COL[p.team]}" stroke="${COL[p.team]}" stroke-width="${act?2:0}"/>`;
+    const lx=c+Math.cos(a)*(R+11), ly=c+Math.sin(a)*(R+11);
+    labels += `<text x="${lx.toFixed(1)}" y="${(ly+3).toFixed(1)}" text-anchor="middle" font-size="8.5" fill="${act?'#dbe6f2':'#7d8aa0'}">${lab}</text>`;
+  }
+  return `<svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}">`+
+    grid+spokes+
+    `<polygon class="radar-poly" points="${pts.join(' ')}" fill="${COL[p.team]}" fill-opacity="0.22" stroke="${COL[p.team]}" stroke-width="2" stroke-linejoin="round"/>`+
+    dots+labels+`</svg>`;
+}
+
+/* ============================================================
+   PLAYER STATS
+   ============================================================ */
+let faActive='dist';
+function renderPlayers(){
+  const seg=document.getElementById('fa-seg'), ind=document.getElementById('fa-ind');
+  if(!seg.dataset.built){
+    MATCH.faMetrics.forEach(([k,lab])=>{
+      const b=document.createElement('div'); b.className='seg-btn'; b.dataset.k=k; b.textContent=lab;
+      if(k===faActive) b.classList.add('on');
+      b.onclick=()=>{ faActive=k; moveInd(b); drawCards(); };
+      seg.appendChild(b);
+    });
+    seg.dataset.built='1';
+  }
+  function moveInd(btn){
+    seg.querySelectorAll('.seg-btn').forEach(x=>x.classList.toggle('on',x===btn));
+    ind.style.left=btn.offsetLeft+'px'; ind.style.width=btn.offsetWidth+'px';
+  }
+  function drawCards(){
+    const grid=document.getElementById('fa-grid');
+    const meta=MATCH.faMetrics.find(m=>m[0]===faActive);
+    const unit=meta[2], label=meta[1];
+    const sorted=[...P].sort((a,b)=>b[faActive]-a[faActive]);
+    grid.innerHTML='';
+    sorted.forEach((p,idx)=>{
+      const card=document.createElement('div'); card.className='pc'; card.style.setProperty('--ac',COL[p.team]);
+      card.style.animationDelay=(idx*0.04)+'s';
+      const rk = idx<3 ? `<div class="rk g${idx+1}">#${idx+1}</div>` : '';
+      card.innerHTML =
+        `<div class="pc-fx"><span class="blob b1"></span><span class="blob b2"></span><span class="blob b3"></span></div>`+
+        rk+
+        `<div class="pc-top"><span class="pc-dot"></span><span class="pc-name">${p.id}</span><span class="pc-min">${p.mins} min</span></div>`+
+        `<div class="pc-feat"><span class="pc-big num">0</span><span class="pc-unit">${unit}</span><span class="pc-flab">${label}</span></div>`+
+        `<div class="pc-radar"><span class="pc-ring"></span>${radarSVG(p,faActive,132)}</div>`;
+      grid.appendChild(card);
+      const dec = unit==='m/s' || (p[faActive]%1!==0);
+      countUp(card.querySelector('.pc-big'), p[faActive], 650, dec);
+    });
+  }
+  // initial indicator placement after layout
+  requestAnimationFrame(()=>{ const on=seg.querySelector('.seg-btn.on'); if(on) moveInd(on); });
+  drawCards();
+}
+
+/* ============================================================
+   AWARDS
+   ============================================================ */
+function renderAwards(){
+  const grid=document.getElementById('aw-grid');
+  const defs=[
+    { ico:'★', ttl:'Player of the match', key:null, win:MVP, unit:'', val:null,
+      why:'Highest overall impact across distance, passing and possession.' },
+    { ico:'⚡', ttl:'Top speed', key:'top', unit:'m/s', why:'Fastest sprint recorded in the match.' },
+    { ico:'🔋', ttl:'Engine', key:'dist', unit:'m', why:'Covered the most ground over the full match.' },
+    { ico:'🎯', ttl:'Playmaker', key:'made', unit:'', why:'Most completed passes — pulled the strings.' },
+    { ico:'🧲', ttl:'Possession king', key:'poss', unit:'s', why:'Held the ball longer than anyone else.' },
+    { ico:'💨', ttl:'Sprinter', key:'sprint', unit:'', why:'Most high-intensity sprint bursts.' }
+  ];
+  grid.innerHTML = defs.map(d=>{
+    const p = d.win || leader(d.key);
+    const val = d.key ? fmt(p[d.key], d.unit) : '';
+    const valHtml = d.key ? `<div class="aw-val"><span class="v num">${val}</span><span class="u">${d.unit}</span></div>` : '';
+    return `<div class="aw" style="--ac:${COL[p.team]}">`+
+      `<div class="aw-top"><div class="aw-ico">${d.ico}</div>`+
+      `<div><div class="aw-ttl">${d.ttl}</div><div class="aw-win">${p.id}</div></div></div>`+
+      valHtml+`<div class="aw-why">${d.why}</div></div>`;
+  }).join('');
+}
+
+/* ============================================================
+   YOUR GAME (personal card)
+   ============================================================ */
+function renderPersonal(){
+  const sel=document.getElementById('pgPick');
+  if(!sel.dataset.built){
+    sel.innerHTML = P.map(p=>`<option value="${p.id}">${p.id}</option>`).join('');
+    sel.value = MVP.id;
+    sel.onchange=()=>draw(sel.value);
+    sel.dataset.built='1';
+  }
+  function rankClass(r){ return r<=3?'pg-rank-good':r<=6?'pg-rank-mid':'pg-rank-low'; }
+  function draw(id){
+    const p=P.find(x=>x.id===id);
+    document.getElementById('pgSub').textContent =
+      `${p.id} · ${p.team} · ${p.mins} min played`;
+    document.getElementById('pgRadar').innerHTML =
+      `<span class="pc-ring" style="--ac:${COL[p.team]}"></span>`+radarSVG(p,null,200);
+
+    const stats=[
+      ['Distance', p.dist, 'm', 'dist'],
+      ['Top speed', p.top, 'm/s', 'top'],
+      ['Passes', p.made, '', 'made'],
+      ['Possession', p.poss, 's', 'poss']
+    ];
+    document.getElementById('pgStats').innerHTML = stats.map(([l,v,u,k])=>{
+      const r=rankOf(p,k);
+      return `<div class="pg-stat"><div class="l">${l}</div>`+
+        `<div class="v num">${fmt(v,u)}${u?`<small>${u}</small>`:''}</div>`+
+        `<div class="rank ${rankClass(r)}">${ord(r)} of ${P.length} in the match</div></div>`;
+    }).join('');
+
+    // best & weakest metric vs squad → insight + tip
+    const keys=['dist','top','made','poss'];
+    const lab={dist:'distance covered',top:'top speed',made:'passing',poss:'ball control'};
+    let best=keys[0], worst=keys[0];
+    keys.forEach(k=>{ if(rankOf(p,k)<rankOf(p,best))best=k; if(rankOf(p,k)>rankOf(p,worst))worst=k; });
+    const br=rankOf(p,best), wr=rankOf(p,worst);
+    const good = `You ranked <b>${ord(br)}</b> in the squad for <b>${lab[best]}</b>`+
+      (br<=3?' — a standout part of your game.':'. Solid contribution.');
+    const tip = wr>4
+      ? `Your <b>${lab[worst]}</b> came in <b>${ord(wr)}</b> of ${P.length}. Target this next match to round out your game.`
+      : `Well balanced across the board — keep pushing your <b>${lab[worst]}</b> to climb even higher.`;
+    document.getElementById('pgInsight').innerHTML =
+      `<div class="pg-note good"><span class="lab">What went well</span><span>${good}</span></div>`+
+      `<div class="pg-note tip"><span class="lab">Improve next time</span><span>${tip}</span></div>`;
+  }
+  draw(sel.value);
+}
+
+/* ============================================================
+   HEATMAPS (procedural pitch + occupancy blooms)
+   ============================================================ */
+// occupancy points per team: [xFrac, yFrac, weight]
+const HEAT = {
+  BLUE: [[.28,.5,1],[.18,.32,.7],[.35,.66,.8],[.45,.5,.9],[.22,.7,.6],[.4,.3,.7],[.12,.5,.5]],
+  YEL:  [[.7,.5,1],[.82,.36,.8],[.62,.64,.85],[.55,.5,.9],[.78,.7,.7],[.66,.3,.6],[.88,.52,.6]]
+};
+function drawHeat(){
+  const cv=document.getElementById('heatCanvas'); const ctx=cv.getContext('2d');
+  const W=cv.width, H=cv.height, pad=24;
+  ctx.clearRect(0,0,W,H);
+  // pitch base
+  ctx.fillStyle='#0c5c2e'; ctx.globalAlpha=.18; ctx.fillRect(0,0,W,H); ctx.globalAlpha=1;
+  // mowed stripes
+  for(let i=0;i<10;i++){ ctx.fillStyle = i%2? 'rgba(255,255,255,.015)':'rgba(0,0,0,.06)';
+    ctx.fillRect(pad+i*(W-2*pad)/10,pad,(W-2*pad)/10,H-2*pad); }
+  // occupancy blooms
+  const bloom=(pts,color)=>{
+    pts.forEach(([fx,fy,w])=>{
+      const x=pad+fx*(W-2*pad), y=pad+fy*(H-2*pad), r=120*w;
+      const g=ctx.createRadialGradient(x,y,0,x,y,r);
+      g.addColorStop(0,color+'cc'); g.addColorStop(.5,color+'55'); g.addColorStop(1,color+'00');
+      ctx.fillStyle=g; ctx.beginPath(); ctx.arc(x,y,r,0,7); ctx.fill();
+    });
+  };
+  ctx.globalCompositeOperation='screen';
+  bloom(HEAT.BLUE, '#3b82f6'); bloom(HEAT.YEL, '#f5b62a');
+  ctx.globalCompositeOperation='source-over';
+  // pitch lines
+  ctx.strokeStyle='rgba(255,255,255,.5)'; ctx.lineWidth=2;
+  ctx.strokeRect(pad,pad,W-2*pad,H-2*pad);
+  ctx.beginPath(); ctx.moveTo(W/2,pad); ctx.lineTo(W/2,H-pad); ctx.stroke();
+  ctx.beginPath(); ctx.arc(W/2,H/2,64,0,7); ctx.stroke();
+  // penalty boxes
+  const bh=H*0.42, by=(H-bh)/2, bw=90;
+  ctx.strokeRect(pad,by,bw,bh); ctx.strokeRect(W-pad-bw,by,bw,bh);
+}
+
+/* ============================================================
+   TABS
+   ============================================================ */
+const built={heat:false,team:false,players:false,awards:false,you:false};
+function showTab(name){
+  document.querySelectorAll('.tabs button').forEach(b=>b.classList.toggle('on',b.dataset.tab===name));
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('on'));
+  document.getElementById('tab-'+name).classList.add('on');
+  if(name==='heat'){ drawHeat(); }
+  if(name==='team'){ renderTeam(); }
+  if(name==='players' && !built.players){ renderPlayers(); built.players=true; }
+  if(name==='awards' && !built.awards){ renderAwards(); built.awards=true; }
+  if(name==='you' && !built.you){ renderPersonal(); built.you=true; }
+}
+document.getElementById('tabs').addEventListener('click',e=>{
+  const b=e.target.closest('button'); if(b) showTab(b.dataset.tab);
+});
+
+/* ============================================================
+   INIT + JETSON REVEAL
+   ============================================================ */
+let revealed=false;
+function revealDashboard(){
+  if(revealed) return; revealed=true;
+  const ov=document.getElementById('reveal');
+  if(ov) ov.classList.add('gone');
+  renderHero(); renderStory();
+  countUp(document.getElementById('scoreBlue'), MATCH.score.BLUE, 900, false);
+  countUp(document.getElementById('scoreYel'),  MATCH.score.YEL,  900, false);
+  drawHeat(); // default tab
+}
+function init(){
+  const ov=document.getElementById('reveal'), bar=document.getElementById('rvBar');
+  // Reduced motion: skip the reveal animation entirely.
+  if(REDUCE){ revealDashboard(); return; }
+  // Drive the progress bar with rAF (deterministic, never stalls like setInterval can).
+  const DUR=1500; let start=null;
+  function tick(now){
+    if(revealed) return;
+    if(start===null) start=now;
+    const k=Math.min(1,(now-start)/DUR);
+    if(bar) bar.style.width=(k*100).toFixed(1)+'%';
+    if(k<1) requestAnimationFrame(tick);
+    else setTimeout(revealDashboard, 200);
+  }
+  requestAnimationFrame(tick);
+  // Hard fallback: no matter what (throttled tab, rAF paused), never trap the user on the loader.
+  setTimeout(revealDashboard, 2600);
+  // Let an impatient user skip the intro by tapping/clicking it.
+  if(ov) ov.addEventListener('click', revealDashboard);
+}
+// No full-screen loader on the website build — render the dashboard immediately.
+if(document.readyState==='loading') document.addEventListener('DOMContentLoaded', revealDashboard);
+else revealDashboard();
+</script>
+</body>
+</html>
