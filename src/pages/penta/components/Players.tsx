@@ -1,5 +1,5 @@
 import { CSSProperties, useLayoutEffect, useRef, useState } from 'react';
-import { COL, MATCH, P, Player } from '../matchData';
+import { COL, MATCH, P, Player, rating, ratingTier } from '../matchData';
 import CountUp from './CountUp';
 import Radar from './Radar';
 
@@ -52,14 +52,10 @@ export default function Players({ active }: { active: boolean }) {
         <div className="fa-grid">
           {sorted.map((p, idx) => {
             const dec = unit === 'm/s' || (p[metric] as number) % 1 !== 0;
+            const r = rating(p);
             return (
               <div key={p.id} className="pc" style={{ '--ac': COL[p.team], animationDelay: `${idx * 0.04}s` } as CSSProperties}>
-                <div className="pc-fx">
-                  <span className="blob b1" />
-                  <span className="blob b2" />
-                  <span className="blob b3" />
-                </div>
-                {idx < 3 && <div className={`rk g${idx + 1}`}>#{idx + 1}</div>}
+                <div className={`pc-rate rate ${ratingTier(r)}`} title="Match rating">{r.toFixed(1)}</div>
                 <div className="pc-top">
                   <span className="pc-dot" />
                   <span className="pc-name">{p.id}</span>

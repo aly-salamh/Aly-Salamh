@@ -1,5 +1,5 @@
 import { CSSProperties, Fragment, useState } from 'react';
-import { COL, MVP, P, Player, fmt, ord, rankOf } from '../matchData';
+import { COL, MVP, P, Player, badgesFor, fmt, levelOf, ord, rankOf, rating, xp } from '../matchData';
 import Radar from './Radar';
 
 type Key = Exclude<keyof Player, 'id' | 'team'>;
@@ -50,6 +50,28 @@ export default function PersonalCard() {
           </select>
         </div>
         <div className="card-s">{`${p.id} · ${p.team} · ${p.mins} min played`}</div>
+
+        {(() => {
+          const r = rating(p);
+          const lv = levelOf(p);
+          return (
+            <div className="pg-hero">
+              <div className="pg-rate">
+                <span className="big">{r.toFixed(1)}</span>
+                <span className="cap">Rating</span>
+              </div>
+              <div className="pg-lvlbox">
+                <div className="lvl">
+                  <span className="lvl-badge">Level {lv.level}</span>
+                  <div className="lvl-bar"><div className="lvl-fill" style={{ width: `${lv.pct}%` }} /></div>
+                  <span className="lvl-xp">{xp(p)} XP</span>
+                </div>
+                <div className="card-s" style={{ margin: '8px 0 0' }}>{`${lv.remaining} XP to level ${lv.level + 1}`}</div>
+              </div>
+            </div>
+          );
+        })()}
+
         <div className="pg-body">
           <div className="pg-radar">
             <span className="pc-ring" style={{ '--ac': COL[p.team] } as CSSProperties} />
@@ -78,6 +100,20 @@ export default function PersonalCard() {
             <div className="pg-note tip">
               <span className="lab">Improve next time</span>
               <span>{renderBold(tip)}</span>
+            </div>
+            <div>
+              <div className="pg-sublab">Badges {`· ${badgesFor(p).filter((b) => b.on).length}/${badgesFor(p).length} earned`}</div>
+              <div className="badges">
+                {badgesFor(p).map((b) => (
+                  <div className={`badge${b.on ? '' : ' off'}`} key={b.key}>
+                    <span className="bi">{b.ico}</span>
+                    <span>
+                      <span className="bn">{b.name}</span>
+                      <span className="bd" style={{ display: 'block' }}>{b.on ? b.desc : 'Locked'}</span>
+                    </span>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
         </div>

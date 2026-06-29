@@ -5,13 +5,15 @@ import Heatmap from './Heatmap';
 import TeamBars from './TeamBars';
 import Players from './Players';
 import Awards from './Awards';
+import Leaderboard from './Leaderboard';
 import PersonalCard from './PersonalCard';
 
-type Tab = 'heat' | 'team' | 'players' | 'awards' | 'you';
+type Tab = 'heat' | 'team' | 'players' | 'board' | 'awards' | 'you';
 const TABS: [Tab, string][] = [
   ['heat', 'Heatmaps'],
   ['team', 'Team'],
   ['players', 'Players'],
+  ['board', 'Leaderboard'],
   ['awards', 'Awards'],
   ['you', 'Your game'],
 ];
@@ -65,6 +67,7 @@ export default function MatchInsights() {
           {tab === 'heat' && <Heatmap active={shown} />}
           {tab === 'team' && <TeamBars active={shown} />}
           {tab === 'players' && <Players active={shown} />}
+          {tab === 'board' && <Leaderboard />}
           {tab === 'awards' && <Awards />}
           {tab === 'you' && <PersonalCard />}
         </div>

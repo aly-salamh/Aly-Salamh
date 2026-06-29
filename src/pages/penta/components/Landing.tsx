@@ -18,6 +18,13 @@ const FEATS = [
   { ic: '⚡', h: 'Ready in minutes', p: 'Insights land on your phone right after full time.' },
 ];
 
+const PROG = [
+  { ic: '⭐', h: 'Match rating /10', p: 'Every performance gets a single FIFA-style score, computed from your stats.' },
+  { ic: '📊', h: 'XP & levels', p: 'Earn XP from distance, passes and big moments — level up game after game.' },
+  { ic: '🎖️', h: 'Badges to collect', p: 'Unlock achievements like Speed Demon, Engine and Playmaker.' },
+  { ic: '🏆', h: 'Squad leaderboard', p: 'See who topped the match and chase the number one spot next time.' },
+];
+
 export default function Landing() {
   return (
     <>
@@ -74,6 +81,23 @@ export default function Landing() {
               </div>
             ))}
           </div>
+        </div>
+      </section>
+
+      <section className="sec" style={{ paddingTop: 0 }}>
+        <div className="sec-h">
+          <div className="sec-eyebrow">Level up</div>
+          <h2 className="sec-title">Every game makes you better</h2>
+          <p className="sec-sub">penta turns each match into progress — a rating, XP, badges and a spot on the squad leaderboard.</p>
+        </div>
+        <div className="feats">
+          {PROG.map((f) => (
+            <div className="feat" key={f.h}>
+              <div className="ic">{f.ic}</div>
+              <h4>{f.h}</h4>
+              <p>{f.p}</p>
+            </div>
+          ))}
         </div>
       </section>
     </>

@@ -160,6 +160,71 @@ export const storyText = (): string => {
   return s;
 };
 
+// ============================================================
+// GAMIFICATION — rating /10, XP + levels, badges, leaderboard.
+// All deterministic from the match data.
+// ============================================================
+const MAX_MVP = Math.max(...P.map((p) => mvpScore(p))) || 1;
+
+/** FIFA-style match rating out of 10 (5.0–9.9), from normalized impact. */
+export const rating = (p: Player): number => {
+  const r = mvpScore(p) / MAX_MVP; // 0..1
+  return Math.round(Math.min(9.9, Math.max(5.0, 5.2 + r * 4.5)) * 10) / 10;
+};
+
+/** XP earned this match from raw contributions. */
+export const xp = (p: Player): number =>
+  Math.round(p.dist * 3 + p.made * 60 + p.touches * 20 + p.sprint * 40 + p.poss * 15 + p.recv * 25 + (p.id === MVP.id ? 150 : 0) + rating(p) * 30);
+
+const XP_PER_LEVEL = 220;
+export interface Level {
+  level: number;
+  into: number;       // xp into current level
+  per: number;        // xp per level
+  pct: number;        // progress 0..100
+  remaining: number;  // xp to next level
+}
+export const levelOf = (p: Player): Level => {
+  const x = xp(p);
+  const level = Math.floor(x / XP_PER_LEVEL) + 1;
+  const into = x % XP_PER_LEVEL;
+  return { level, into, per: XP_PER_LEVEL, pct: (into / XP_PER_LEVEL) * 100, remaining: XP_PER_LEVEL - into };
+};
+
+export interface Badge {
+  key: string;
+  ico: string;
+  name: string;
+  desc: string;
+  earned: (p: Player) => boolean;
+}
+export const BADGES: Badge[] = [
+  { key: 'mvp', ico: '⭐', name: 'MVP', desc: 'Player of the match', earned: (p) => p.id === MVP.id },
+  { key: 'pace', ico: '⚡', name: 'Speed Demon', desc: 'Hit 4.5+ m/s top speed', earned: (p) => p.top >= 4.5 },
+  { key: 'engine', ico: '🔋', name: 'Engine', desc: 'Covered 47m+ on the pitch', earned: (p) => p.dist >= 47 },
+  { key: 'playmaker', ico: '🎯', name: 'Playmaker', desc: 'Completed 2+ passes', earned: (p) => p.made >= 2 },
+  { key: 'magnet', ico: '🧲', name: 'Ball Magnet', desc: '3s+ on the ball', earned: (p) => p.poss >= 3 },
+  { key: 'sprinter', ico: '💨', name: 'Sprinter', desc: 'Explosive sprint bursts', earned: (p) => p.sprint > 0 },
+  { key: 'provider', ico: '🤝', name: 'Provider', desc: 'Received 2+ passes', earned: (p) => p.recv >= 2 },
+  { key: 'busy', ico: '🔥', name: 'Involved', desc: '5+ touches in the game', earned: (p) => p.touches >= 5 },
+];
+export const badgesFor = (p: Player) => BADGES.map((b) => ({ ...b, on: b.earned(p) }));
+
+export interface BoardRow {
+  rank: number;
+  player: Player;
+  rating: number;
+  level: number;
+  xp: number;
+}
+export const leaderboard = (): BoardRow[] =>
+  [...P]
+    .sort((a, b) => rating(b) - rating(a) || xp(b) - xp(a))
+    .map((player, i) => ({ rank: i + 1, player, rating: rating(player), level: levelOf(player).level, xp: xp(player) }));
+
+/** rating tier → css class suffix for colouring the pill */
+export const ratingTier = (r: number): 'hi' | 'mid' | 'lo' => (r >= 8 ? 'hi' : r >= 6.5 ? 'mid' : 'lo');
+
 // occupancy points per team for the heatmap: [xFrac, yFrac, weight]
 export const HEAT: Record<TeamId, [number, number, number][]> = {
   BLUE: [[0.28, 0.5, 1], [0.18, 0.32, 0.7], [0.35, 0.66, 0.8], [0.45, 0.5, 0.9], [0.22, 0.7, 0.6], [0.4, 0.3, 0.7], [0.12, 0.5, 0.5]],

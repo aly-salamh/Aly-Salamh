@@ -13,18 +13,20 @@
     --blue:#3b82f6; --yel:#f5b62a;
     --blue-a:#1e5fd6; --blue-b:#4f93ff;
     --yel-a:#ffc94d;  --yel-b:#f5a623;
-    --bg:#0e151f; --ink:#e8eef5; --sub:#8497ad; --mut:#7d8aa0;
-    --line:#223144; --line-hi:#33557a; --card-dk:#0d1620; --field:#0e1722;
+    --turf:#22c55e; --turf-d:#16a34a; --turf-l:#4ade80;
+    --bg:#0b130e; --bg2:#0d1712; --ink:#e9f1ea; --sub:#8ea399; --mut:#7e948a;
+    --line:#1f3127; --line-hi:#2f5b41; --card-dk:#0c1611; --field:#0c150f;
     --gold:#f5c451; --silver:#cfd8e3; --bronze:#d68a4f;
     --gold-ink:#1a1205; --silver-ink:#10151c; --bronze-ink:#1a0f06;
-    --grid:#2a3a4f;
+    --grid:#26402f;
   }
   *{box-sizing:border-box}
   html,body{margin:0}
   body{
     background:var(--bg); color:var(--ink);
+    background-image:repeating-linear-gradient(90deg, rgba(255,255,255,.014) 0 64px, rgba(0,0,0,.05) 64px 128px);
     font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
-    padding:26px 18px 60px; -webkit-font-smoothing:antialiased;
+    padding:0 0 0; -webkit-font-smoothing:antialiased;
   }
   .wrap{max-width:1140px; margin:0 auto}
   .num{font-variant-numeric:tabular-nums}
@@ -33,7 +35,7 @@
   .topbar{display:flex; align-items:center; gap:10px; margin:0 0 18px}
   .brand{display:flex; align-items:center; gap:9px; font-weight:800; letter-spacing:.4px}
   .brand .mark{width:26px;height:26px;border-radius:8px;display:grid;place-items:center;
-    background:linear-gradient(135deg,var(--blue),var(--yel)); color:#0b1019; font-weight:900; font-size:15px}
+    background:linear-gradient(135deg,var(--turf),var(--turf-d)); color:#04140a; font-weight:900; font-size:15px}
   .brand small{color:var(--sub); font-weight:600; letter-spacing:1.4px; text-transform:uppercase; font-size:10px}
   .topbar .when{margin-left:auto; color:var(--mut); font-size:12px; display:flex; align-items:center; gap:7px}
   .live-dot{width:7px;height:7px;border-radius:50%;background:#36d399;box-shadow:0 0 0 3px rgba(54,211,153,.2)}
@@ -254,7 +256,7 @@
   .pnav-links{margin-left:auto;display:flex;align-items:center;gap:22px}
   .pnav-links a{color:var(--sub);font-size:13px;font-weight:600;text-decoration:none;cursor:pointer;transition:color .2s}
   .pnav-links a:hover{color:var(--ink)}
-  .btn{display:inline-flex;align-items:center;gap:7px;cursor:pointer;border:0;border-radius:12px;padding:10px 18px;font-size:13px;font-weight:700;color:#0b1019;background:linear-gradient(135deg,var(--blue-b),var(--yel));transition:transform .15s,filter .2s;text-decoration:none}
+  .btn{display:inline-flex;align-items:center;gap:7px;cursor:pointer;border:0;border-radius:12px;padding:10px 18px;font-size:13px;font-weight:800;color:#04140a;letter-spacing:.2px;background:linear-gradient(135deg,var(--turf-l),var(--turf-d));transition:transform .15s,filter .2s;text-decoration:none}
   .btn:hover{transform:translateY(-1px);filter:brightness(1.06)}
   .btn.ghost{background:transparent;color:var(--ink);border:1px solid var(--line-hi)}
   .lhero{position:relative;overflow:hidden;padding:72px 18px 60px}
@@ -265,17 +267,17 @@
   .pill{display:inline-flex;align-items:center;gap:8px;font-size:11px;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;color:var(--sub);background:var(--card-dk);border:1px solid var(--line);border-radius:999px;padding:7px 14px}
   .pill .live-dot{width:7px;height:7px;border-radius:50%;background:#36d399;box-shadow:0 0 0 3px rgba(54,211,153,.2)}
   .lhero h1{font-size:58px;line-height:1.02;font-weight:800;letter-spacing:-.5px;margin:22px 0 0}
-  .lhero h1 .grad{background:linear-gradient(120deg,var(--blue-b),var(--yel));-webkit-background-clip:text;background-clip:text;color:transparent}
+  .lhero h1 .grad{background:linear-gradient(120deg,var(--turf-l),var(--turf));-webkit-background-clip:text;background-clip:text;color:transparent}
   .lhero p.lead{max-width:620px;margin:18px auto 0;font-size:18px;line-height:1.6;color:var(--sub)}
   .lhero .cta{margin-top:30px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
   .sec{padding:54px 18px;max-width:1140px;margin:0 auto}
   .sec-h{text-align:center;margin-bottom:34px}
-  .sec-eyebrow{font-size:11px;font-weight:800;letter-spacing:1.8px;text-transform:uppercase;color:var(--blue-b)}
+  .sec-eyebrow{font-size:11px;font-weight:800;letter-spacing:1.8px;text-transform:uppercase;color:var(--turf-l)}
   .sec-title{font-size:32px;font-weight:800;letter-spacing:-.3px;margin:8px 0 0}
   .sec-sub{font-size:15px;color:var(--sub);margin:10px auto 0;max-width:560px}
   .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
   .step{position:relative;overflow:hidden;border-radius:18px;padding:24px 22px;background:linear-gradient(180deg,#19232f,#131c27);border:1px solid rgba(255,255,255,.05)}
-  .step .n{width:34px;height:34px;border-radius:11px;display:grid;place-items:center;font-weight:900;font-size:15px;color:#0b1019;background:linear-gradient(135deg,var(--blue-b),var(--yel))}
+  .step .n{width:34px;height:34px;border-radius:11px;display:grid;place-items:center;font-weight:900;font-size:15px;color:#04140a;background:linear-gradient(135deg,var(--turf-l),var(--turf-d))}
   .step h3{margin:14px 0 6px;font-size:17px;font-weight:800}
   .step p{margin:0;font-size:14px;line-height:1.55;color:var(--sub)}
   .feats{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
@@ -290,6 +292,48 @@
   @media (prefers-reduced-motion:reduce){
     *{animation:none!important;transition:none!important}
   }
+  /* ---- minimal motion: strip decorative loops/blobs/pulses ---- */
+  .hb,.ta-fx,.pc-fx,.pc-ring{display:none!important}
+  .pc-dot{animation:none}
+  .pc,.aw,.ta-row{animation:none}
+  .radar-poly{animation:none}
+  /* ---- gamification ---- */
+  .rate{display:inline-flex;align-items:baseline;gap:1px;font-weight:800;border-radius:9px;padding:3px 8px;font-size:13px;line-height:1}
+  .rate.hi{background:rgba(34,197,94,.16);color:var(--turf-l);border:1px solid rgba(34,197,94,.4)}
+  .rate.mid{background:rgba(245,182,42,.14);color:var(--yel);border:1px solid rgba(245,182,42,.38)}
+  .rate.lo{background:rgba(132,163,153,.12);color:var(--sub);border:1px solid var(--line)}
+  .pc-rate{position:absolute;top:13px;right:14px;z-index:3}
+  .lvl{display:flex;align-items:center;gap:9px;margin-top:10px}
+  .lvl-badge{flex:none;font-size:10px;font-weight:800;letter-spacing:.4px;color:var(--turf-l);background:rgba(34,197,94,.12);border:1px solid rgba(34,197,94,.32);border-radius:8px;padding:3px 8px;text-transform:uppercase}
+  .lvl-bar{position:relative;flex:1;height:8px;border-radius:999px;background:var(--card-dk);border:1px solid var(--line);overflow:hidden}
+  .lvl-fill{height:100%;width:0;background:linear-gradient(90deg,var(--turf-d),var(--turf-l));border-radius:999px;transition:width .9s cubic-bezier(.34,.02,.18,1)}
+  .lvl-xp{flex:none;font-size:10.5px;color:var(--mut);font-weight:700}
+  .badges{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:9px}
+  .badge{display:flex;align-items:center;gap:10px;border-radius:12px;padding:10px 12px;background:var(--card-dk);border:1px solid var(--line)}
+  .badge .bi{width:32px;height:32px;flex:none;border-radius:9px;display:grid;place-items:center;font-size:16px;background:rgba(34,197,94,.14);border:1px solid rgba(34,197,94,.3)}
+  .badge .bn{font-size:13px;font-weight:800}
+  .badge .bd{font-size:10.5px;color:var(--mut);margin-top:1px;line-height:1.3;display:block}
+  .badge.off{opacity:.4;filter:grayscale(.7)}
+  .badge.off .bi{background:var(--field);border-color:var(--line)}
+  .board{display:flex;flex-direction:column;gap:8px}
+  .bd-row{display:grid;grid-template-columns:34px 1fr auto auto auto;align-items:center;gap:14px;padding:12px 14px;border-radius:13px;background:linear-gradient(180deg,#0f1c14,#0c1611);border:1px solid var(--line)}
+  .bd-row.top{border-color:rgba(34,197,94,.32)}
+  .bd-rank{font-size:15px;font-weight:800;color:var(--mut);text-align:center}
+  .bd-rank.m1{color:var(--gold)} .bd-rank.m2{color:var(--silver)} .bd-rank.m3{color:var(--bronze)}
+  .bd-who{display:flex;align-items:center;gap:9px;min-width:0}
+  .bd-dot{width:10px;height:10px;border-radius:50%;flex:none}
+  .bd-name{font-weight:800;font-size:15px}
+  .bd-team{font-size:10px;color:var(--mut);font-weight:700;letter-spacing:1px}
+  .bd-lvl{font-size:11px;font-weight:800;color:var(--turf-l)}
+  .bd-xp{font-size:11px;color:var(--mut);font-weight:700}
+  .bd-head{display:grid;grid-template-columns:34px 1fr auto auto auto;gap:14px;padding:0 14px 4px;font-size:9.5px;letter-spacing:1.4px;text-transform:uppercase;color:var(--mut);font-weight:800}
+  .pg-hero{display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin:4px 0 14px}
+  .pg-rate{display:flex;flex-direction:column;align-items:center;justify-content:center;width:88px;height:88px;border-radius:18px;background:linear-gradient(180deg,#0f1c14,#0c1611);border:1px solid rgba(34,197,94,.32)}
+  .pg-rate .big{font-size:34px;font-weight:800;line-height:1;color:var(--turf-l)}
+  .pg-rate .cap{font-size:9px;letter-spacing:1.4px;text-transform:uppercase;color:var(--mut);font-weight:800;margin-top:3px}
+  .pg-lvlbox{flex:1;min-width:220px}
+  .pg-sublab{font-size:10px;letter-spacing:1.6px;text-transform:uppercase;color:var(--sub);font-weight:800;margin:18px 0 10px}
+  @media (max-width:560px){.bd-row,.bd-head{grid-template-columns:28px 1fr auto auto}.bd-xp,.bd-head .h-xp{display:none}}
 </style>
 </head>
 <body>
@@ -338,6 +382,19 @@
       <div class="feat"><div class="ic">🏅</div><h4>Match awards</h4><p>MVP, top speed, engine, playmaker — auto-selected.</p></div>
       <div class="feat"><div class="ic">📈</div><h4>Your performance</h4><p>Personal stats, squad rank and tips to improve.</p></div>
       <div class="feat"><div class="ic">⚡</div><h4>Ready in minutes</h4><p>Insights land on your phone right after full time.</p></div>
+    </div>
+  </section>
+
+  <!-- ====== LEVEL UP (gamification) ====== -->
+  <section class="sec" style="padding-top:0">
+    <div class="sec-h"><div class="sec-eyebrow">Level up</div>
+      <h2 class="sec-title">Every game makes you better</h2>
+      <p class="sec-sub">penta turns each match into progress — a rating, XP, badges and a spot on the squad leaderboard.</p></div>
+    <div class="feats">
+      <div class="feat"><div class="ic">⭐</div><h4>Match rating /10</h4><p>Every performance gets a single FIFA-style score, computed from your stats.</p></div>
+      <div class="feat"><div class="ic">📊</div><h4>XP &amp; levels</h4><p>Earn XP from distance, passes and big moments — level up game after game.</p></div>
+      <div class="feat"><div class="ic">🎖️</div><h4>Badges to collect</h4><p>Unlock achievements like Speed Demon, Engine and Playmaker.</p></div>
+      <div class="feat"><div class="ic">🏆</div><h4>Squad leaderboard</h4><p>See who topped the match and chase the number one spot next time.</p></div>
     </div>
   </section>
 
@@ -393,6 +450,7 @@
       <button data-tab="heat" class="on">Heatmaps</button>
       <button data-tab="team">Team</button>
       <button data-tab="players">Players</button>
+      <button data-tab="board">Leaderboard</button>
       <button data-tab="awards">Awards</button>
       <button data-tab="you">Your game</button>
     </nav>
@@ -446,6 +504,16 @@
       </div>
     </section>
 
+    <!-- LEADERBOARD -->
+    <section id="tab-board" class="panel">
+      <div class="card">
+        <div class="card-h">Squad leaderboard</div>
+        <div class="card-s">Ranked by match rating · earn XP and climb every game</div>
+        <div class="bd-head"><span>#</span><span>Player</span><span>Lvl</span><span class="h-xp">XP</span><span>Rating</span></div>
+        <div class="board" id="bd-rows"></div>
+      </div>
+    </section>
+
     <!-- AWARDS -->
     <section id="tab-awards" class="panel">
       <div class="card">
@@ -463,10 +531,15 @@
           <select id="pgPick"></select>
         </div>
         <div class="card-s" id="pgSub">Your personal breakdown · how you ranked in the squad</div>
+        <div id="pgHero"></div>
         <div class="pg-body">
           <div class="pg-radar" id="pgRadar"></div>
           <div class="pg-stats" id="pgStats"></div>
           <div class="pg-insight" id="pgInsight"></div>
+          <div style="grid-column:1/-1">
+            <div class="pg-sublab" id="pgBadgeLab">Badges</div>
+            <div class="badges" id="pgBadges"></div>
+          </div>
         </div>
       </div>
     </section>
@@ -535,6 +608,27 @@ function mvpScore(p){
   return s;
 }
 const MVP = P.reduce((a,b)=> mvpScore(b)>mvpScore(a)?b:a, P[0]);
+
+/* ============================================================
+   GAMIFICATION — rating /10, XP + levels, badges, leaderboard
+   ============================================================ */
+const MAX_MVP = Math.max(...P.map(mvpScore))||1;
+function rating(p){ const r=mvpScore(p)/MAX_MVP; return Math.round(Math.min(9.9,Math.max(5.0,5.2+r*4.5))*10)/10; }
+function xpOf(p){ return Math.round(p.dist*3 + p.made*60 + p.touches*20 + p.sprint*40 + p.poss*15 + p.recv*25 + (p.id===MVP.id?150:0) + rating(p)*30); }
+const XP_PER=220;
+function levelOf(p){ const x=xpOf(p); const level=Math.floor(x/XP_PER)+1; const into=x%XP_PER; return {level,into,per:XP_PER,pct:into/XP_PER*100,remaining:XP_PER-into}; }
+function ratingTier(r){ return r>=8?'hi':r>=6.5?'mid':'lo'; }
+const BADGES=[
+  {key:'mvp',ico:'⭐',name:'MVP',desc:'Player of the match',on:p=>p.id===MVP.id},
+  {key:'pace',ico:'⚡',name:'Speed Demon',desc:'Hit 4.5+ m/s top speed',on:p=>p.top>=4.5},
+  {key:'engine',ico:'🔋',name:'Engine',desc:'Covered 47m+ on the pitch',on:p=>p.dist>=47},
+  {key:'playmaker',ico:'🎯',name:'Playmaker',desc:'Completed 2+ passes',on:p=>p.made>=2},
+  {key:'magnet',ico:'🧲',name:'Ball Magnet',desc:'3s+ on the ball',on:p=>p.poss>=3},
+  {key:'sprinter',ico:'💨',name:'Sprinter',desc:'Explosive sprint bursts',on:p=>p.sprint>0},
+  {key:'provider',ico:'🤝',name:'Provider',desc:'Received 2+ passes',on:p=>p.recv>=2},
+  {key:'busy',ico:'🔥',name:'Involved',desc:'5+ touches in the game',on:p=>p.touches>=5}
+];
+function leaderboard(){ return [...P].sort((a,b)=> rating(b)-rating(a) || xpOf(b)-xpOf(a)).map((player,i)=>({rank:i+1,player,rating:rating(player),level:levelOf(player).level,xp:xpOf(player)})); }
 
 /* ============================================================
    HERO
@@ -714,10 +808,9 @@ function renderPlayers(){
     sorted.forEach((p,idx)=>{
       const card=document.createElement('div'); card.className='pc'; card.style.setProperty('--ac',COL[p.team]);
       card.style.animationDelay=(idx*0.04)+'s';
-      const rk = idx<3 ? `<div class="rk g${idx+1}">#${idx+1}</div>` : '';
+      const r = rating(p);
       card.innerHTML =
-        `<div class="pc-fx"><span class="blob b1"></span><span class="blob b2"></span><span class="blob b3"></span></div>`+
-        rk+
+        `<div class="pc-rate rate ${ratingTier(r)}" title="Match rating">${r.toFixed(1)}</div>`+
         `<div class="pc-top"><span class="pc-dot"></span><span class="pc-name">${p.id}</span><span class="pc-min">${p.mins} min</span></div>`+
         `<div class="pc-feat"><span class="pc-big num">0</span><span class="pc-unit">${unit}</span><span class="pc-flab">${label}</span></div>`+
         `<div class="pc-radar"><span class="pc-ring"></span>${radarSVG(p,faActive,132)}</div>`;
@@ -757,6 +850,24 @@ function renderAwards(){
 }
 
 /* ============================================================
+   LEADERBOARD
+   ============================================================ */
+function renderBoard(){
+  const wrap=document.getElementById('bd-rows');
+  wrap.innerHTML = leaderboard().map(row=>{
+    const top = row.rank<=3 ? ' top' : '';
+    const m = row.rank<=3 ? ` m${row.rank}` : '';
+    return `<div class="bd-row${top}">`+
+      `<div class="bd-rank${m}">${row.rank}</div>`+
+      `<div class="bd-who"><span class="bd-dot" style="background:${COL[row.player.team]}"></span><span class="bd-name">${row.player.id}</span><span class="bd-team">${row.player.team}</span></div>`+
+      `<div class="bd-lvl">Lv ${row.level}</div>`+
+      `<div class="bd-xp">${row.xp} XP</div>`+
+      `<div class="rate ${ratingTier(row.rating)}">${row.rating.toFixed(1)}</div>`+
+    `</div>`;
+  }).join('');
+}
+
+/* ============================================================
    YOUR GAME (personal card)
    ============================================================ */
 function renderPersonal(){
@@ -772,6 +883,27 @@ function renderPersonal(){
     const p=P.find(x=>x.id===id);
     document.getElementById('pgSub').textContent =
       `${p.id} · ${p.team} · ${p.mins} min played`;
+
+    const rt=rating(p), lv=levelOf(p);
+    document.getElementById('pgHero').innerHTML =
+      `<div class="pg-hero">`+
+        `<div class="pg-rate"><span class="big">${rt.toFixed(1)}</span><span class="cap">Rating</span></div>`+
+        `<div class="pg-lvlbox">`+
+          `<div class="lvl"><span class="lvl-badge">Level ${lv.level}</span>`+
+          `<div class="lvl-bar"><div class="lvl-fill" style="width:${lv.pct}%"></div></div>`+
+          `<span class="lvl-xp">${xpOf(p)} XP</span></div>`+
+          `<div class="card-s" style="margin:8px 0 0">${lv.remaining} XP to level ${lv.level+1}</div>`+
+        `</div>`+
+      `</div>`;
+
+    const earned=BADGES.filter(b=>b.on(p)).length;
+    document.getElementById('pgBadgeLab').textContent = `Badges · ${earned}/${BADGES.length} earned`;
+    document.getElementById('pgBadges').innerHTML = BADGES.map(b=>{
+      const on=b.on(p);
+      return `<div class="badge${on?'':' off'}"><span class="bi">${b.ico}</span>`+
+        `<span><span class="bn">${b.name}</span><span class="bd">${on?b.desc:'Locked'}</span></span></div>`;
+    }).join('');
+
     document.getElementById('pgRadar').innerHTML =
       `<span class="pc-ring" style="--ac:${COL[p.team]}"></span>`+radarSVG(p,null,200);
 
@@ -848,7 +980,7 @@ function drawHeat(){
 /* ============================================================
    TABS
    ============================================================ */
-const built={heat:false,team:false,players:false,awards:false,you:false};
+const built={heat:false,team:false,players:false,board:false,awards:false,you:false};
 function showTab(name){
   document.querySelectorAll('.tabs button').forEach(b=>b.classList.toggle('on',b.dataset.tab===name));
   document.querySelectorAll('.panel').forEach(p=>p.classList.remove('on'));
@@ -856,6 +988,7 @@ function showTab(name){
   if(name==='heat'){ drawHeat(); }
   if(name==='team'){ renderTeam(); }
   if(name==='players' && !built.players){ renderPlayers(); built.players=true; }
+  if(name==='board' && !built.board){ renderBoard(); built.board=true; }
   if(name==='awards' && !built.awards){ renderAwards(); built.awards=true; }
   if(name==='you' && !built.you){ renderPersonal(); built.you=true; }
 }

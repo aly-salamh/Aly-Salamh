@@ -3,16 +3,22 @@
    so it never collides with the global fashion app styles.
    ============================================================ */
 .penta-root{
+  /* team identities (data-driven — unchanged) */
   --blue:#3b82f6; --yel:#f5b62a;
   --blue-a:#1e5fd6; --blue-b:#4f93ff;
   --yel-a:#ffc94d;  --yel-b:#f5a623;
-  --bg:#0e151f; --ink:#e8eef5; --sub:#8497ad; --mut:#7d8aa0;
-  --line:#223144; --line-hi:#33557a; --card-dk:#0d1620; --field:#0e1722;
+  /* pitch-green brand accent */
+  --turf:#22c55e; --turf-d:#16a34a; --turf-l:#4ade80;
+  /* dark green-charcoal surfaces */
+  --bg:#0b130e; --bg2:#0d1712; --ink:#e9f1ea; --sub:#8ea399; --mut:#7e948a;
+  --line:#1f3127; --line-hi:#2f5b41; --card-dk:#0c1611; --field:#0c150f;
   --gold:#f5c451; --silver:#cfd8e3; --bronze:#d68a4f;
   --gold-ink:#1a1205; --silver-ink:#10151c; --bronze-ink:#1a0f06;
-  --grid:#2a3a4f;
+  --grid:#26402f;
   min-height:100vh;
   background:var(--bg);
+  /* subtle mowed-pitch stripes — static, no motion */
+  background-image:repeating-linear-gradient(90deg, rgba(255,255,255,.014) 0 64px, rgba(0,0,0,.05) 64px 128px);
   color:var(--ink);
   font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
   -webkit-font-smoothing:antialiased;
@@ -27,14 +33,14 @@
 .penta-root .pnav-in{max-width:1140px;margin:0 auto;padding:13px 18px;display:flex;align-items:center;gap:14px}
 .penta-root .brand{display:flex;align-items:center;gap:9px;font-weight:800;letter-spacing:.4px}
 .penta-root .brand .mark{width:28px;height:28px;border-radius:9px;display:grid;place-items:center;
-  background:linear-gradient(135deg,var(--blue),var(--yel));color:#0b1019;font-weight:900;font-size:16px}
+  background:linear-gradient(135deg,var(--turf),var(--turf-d));color:#04140a;font-weight:900;font-size:16px}
 .penta-root .brand small{color:var(--sub);font-weight:600;letter-spacing:1.4px;text-transform:uppercase;font-size:10px}
 .penta-root .pnav-links{margin-left:auto;display:flex;align-items:center;gap:22px}
 .penta-root .pnav-links a{color:var(--sub);font-size:13px;font-weight:600;text-decoration:none;cursor:pointer;transition:color .2s}
 .penta-root .pnav-links a:hover{color:var(--ink)}
 .penta-root .btn{display:inline-flex;align-items:center;gap:7px;cursor:pointer;border:0;border-radius:12px;
-  padding:10px 18px;font-size:13px;font-weight:700;color:#0b1019;
-  background:linear-gradient(135deg,var(--blue-b),var(--yel));transition:transform .15s,filter .2s;text-decoration:none}
+  padding:10px 18px;font-size:13px;font-weight:800;color:#04140a;letter-spacing:.2px;
+  background:linear-gradient(135deg,var(--turf-l),var(--turf-d));transition:transform .15s,filter .2s;text-decoration:none}
 .penta-root .btn:hover{transform:translateY(-1px);filter:brightness(1.06)}
 .penta-root .btn.ghost{background:transparent;color:var(--ink);border:1px solid var(--line-hi)}
 @media (max-width:620px){.penta-root .pnav-links a{display:none}}
@@ -49,7 +55,7 @@
   text-transform:uppercase;color:var(--sub);background:var(--card-dk);border:1px solid var(--line);border-radius:999px;padding:7px 14px}
 .penta-root .pill .live-dot{width:7px;height:7px;border-radius:50%;background:#36d399;box-shadow:0 0 0 3px rgba(54,211,153,.2)}
 .penta-root .lhero h1{font-size:58px;line-height:1.02;font-weight:800;letter-spacing:-.5px;margin:22px 0 0}
-.penta-root .lhero h1 .grad{background:linear-gradient(120deg,var(--blue-b),var(--yel));-webkit-background-clip:text;background-clip:text;color:transparent}
+.penta-root .lhero h1 .grad{background:linear-gradient(120deg,var(--turf-l),var(--turf));-webkit-background-clip:text;background-clip:text;color:transparent}
 .penta-root .lhero p.lead{max-width:620px;margin:18px auto 0;font-size:18px;line-height:1.6;color:var(--sub)}
 .penta-root .lhero .cta{margin-top:30px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
 @media (max-width:620px){.penta-root .lhero h1{font-size:40px}.penta-root .lhero{padding:48px 0 40px}}
@@ -57,7 +63,7 @@
 /* ---- section frame ---- */
 .penta-root .sec{padding:54px 0}
 .penta-root .sec-h{text-align:center;margin-bottom:34px}
-.penta-root .sec-eyebrow{font-size:11px;font-weight:800;letter-spacing:1.8px;text-transform:uppercase;color:var(--blue-b)}
+.penta-root .sec-eyebrow{font-size:11px;font-weight:800;letter-spacing:1.8px;text-transform:uppercase;color:var(--turf-l)}
 .penta-root .sec-title{font-size:32px;font-weight:800;letter-spacing:-.3px;margin:8px 0 0}
 .penta-root .sec-sub{font-size:15px;color:var(--sub);margin:10px auto 0;max-width:560px}
 
@@ -66,7 +72,7 @@
 .penta-root .step{position:relative;overflow:hidden;border-radius:18px;padding:24px 22px;
   background:linear-gradient(180deg,#19232f,#131c27);border:1px solid rgba(255,255,255,.05)}
 .penta-root .step .n{width:34px;height:34px;border-radius:11px;display:grid;place-items:center;font-weight:900;
-  font-size:15px;color:#0b1019;background:linear-gradient(135deg,var(--blue-b),var(--yel))}
+  font-size:15px;color:#04140a;background:linear-gradient(135deg,var(--turf-l),var(--turf-d))}
 .penta-root .step h3{margin:14px 0 6px;font-size:17px;font-weight:800}
 .penta-root .step p{margin:0;font-size:14px;line-height:1.55;color:var(--sub)}
 @media (max-width:760px){.penta-root .steps{grid-template-columns:1fr}}
@@ -274,3 +280,72 @@
   .penta-root *{animation:none!important;transition:none!important}
   .penta-root .reveal-anim{opacity:1;transform:none}
 }
+
+/* ============================================================
+   MINIMAL MOTION — strip the decorative loops/blobs/pulses.
+   Keep only purposeful transitions (bars, count-ups, hovers, tab fade).
+   ============================================================ */
+.penta-root .hb,
+.penta-root .ta-fx,
+.penta-root .pc-fx,
+.penta-root .pc-ring{display:none!important}
+.penta-root .pc-dot{animation:none}
+.penta-root .pc,
+.penta-root .aw,
+.penta-root .ta-row{animation:none}
+.penta-root .radar-poly{animation:none}
+
+/* ============================================================
+   GAMIFICATION UI
+   ============================================================ */
+/* rating pill (player cards / leaderboard / personal) */
+.penta-root .rate{display:inline-flex;align-items:baseline;gap:1px;font-weight:800;border-radius:9px;padding:3px 8px;font-size:13px;line-height:1}
+.penta-root .rate.hi{background:rgba(34,197,94,.16);color:var(--turf-l);border:1px solid rgba(34,197,94,.4)}
+.penta-root .rate.mid{background:rgba(245,182,42,.14);color:var(--yel);border:1px solid rgba(245,182,42,.38)}
+.penta-root .rate.lo{background:rgba(132,163,153,.12);color:var(--sub);border:1px solid var(--line)}
+.penta-root .pc-rate{position:absolute;top:13px;right:14px;z-index:3}
+
+/* level + xp progress */
+.penta-root .lvl{display:flex;align-items:center;gap:9px;margin-top:10px}
+.penta-root .lvl-badge{flex:none;font-size:10px;font-weight:800;letter-spacing:.4px;color:var(--turf-l);background:rgba(34,197,94,.12);border:1px solid rgba(34,197,94,.32);border-radius:8px;padding:3px 8px;text-transform:uppercase}
+.penta-root .lvl-bar{position:relative;flex:1;height:8px;border-radius:999px;background:var(--card-dk);border:1px solid var(--line);overflow:hidden}
+.penta-root .lvl-fill{height:100%;background:linear-gradient(90deg,var(--turf-d),var(--turf-l));border-radius:999px;transition:width .9s cubic-bezier(.34,.02,.18,1)}
+.penta-root .lvl-xp{flex:none;font-size:10.5px;color:var(--mut);font-weight:700}
+
+/* badges shelf */
+.penta-root .badges{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:9px}
+.penta-root .badge{display:flex;align-items:center;gap:10px;border-radius:12px;padding:10px 12px;background:var(--card-dk);border:1px solid var(--line)}
+.penta-root .badge .bi{width:32px;height:32px;flex:none;border-radius:9px;display:grid;place-items:center;font-size:16px;background:rgba(34,197,94,.14);border:1px solid rgba(34,197,94,.3)}
+.penta-root .badge .bn{font-size:13px;font-weight:800}
+.penta-root .badge .bd{font-size:10.5px;color:var(--mut);margin-top:1px;line-height:1.3}
+.penta-root .badge.off{opacity:.4;filter:grayscale(.7)}
+.penta-root .badge.off .bi{background:var(--field);border-color:var(--line)}
+
+/* leaderboard */
+.penta-root .board{display:flex;flex-direction:column;gap:8px}
+.penta-root .bd-row{display:grid;grid-template-columns:34px 1fr auto auto auto;align-items:center;gap:14px;
+  padding:12px 14px;border-radius:13px;background:linear-gradient(180deg,#0f1c14,#0c1611);border:1px solid var(--line)}
+.penta-root .bd-row.top{border-color:rgba(34,197,94,.32)}
+.penta-root .bd-rank{font-size:15px;font-weight:800;color:var(--mut);text-align:center}
+.penta-root .bd-rank.m1{color:var(--gold)} .penta-root .bd-rank.m2{color:var(--silver)} .penta-root .bd-rank.m3{color:var(--bronze)}
+.penta-root .bd-who{display:flex;align-items:center;gap:9px;min-width:0}
+.penta-root .bd-dot{width:10px;height:10px;border-radius:50%;flex:none}
+.penta-root .bd-name{font-weight:800;font-size:15px}
+.penta-root .bd-team{font-size:10px;color:var(--mut);font-weight:700;letter-spacing:1px}
+.penta-root .bd-lvl{font-size:11px;font-weight:800;color:var(--turf-l)}
+.penta-root .bd-xp{font-size:11px;color:var(--mut);font-weight:700}
+.penta-root .bd-head{display:grid;grid-template-columns:34px 1fr auto auto auto;gap:14px;padding:0 14px 4px;
+  font-size:9.5px;letter-spacing:1.4px;text-transform:uppercase;color:var(--mut);font-weight:800}
+@media (max-width:560px){
+  .penta-root .bd-row,.penta-root .bd-head{grid-template-columns:28px 1fr auto auto}
+  .penta-root .bd-xp,.penta-root .bd-head .h-xp{display:none}
+}
+
+/* personal: rating headline + section labels */
+.penta-root .pg-hero{display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin:4px 0 14px}
+.penta-root .pg-rate{display:flex;flex-direction:column;align-items:center;justify-content:center;width:88px;height:88px;border-radius:18px;
+  background:linear-gradient(180deg,#0f1c14,#0c1611);border:1px solid rgba(34,197,94,.32)}
+.penta-root .pg-rate .big{font-size:34px;font-weight:800;line-height:1;color:var(--turf-l)}
+.penta-root .pg-rate .cap{font-size:9px;letter-spacing:1.4px;text-transform:uppercase;color:var(--mut);font-weight:800;margin-top:3px}
+.penta-root .pg-lvlbox{flex:1;min-width:220px}
+.penta-root .pg-sublab{font-size:10px;letter-spacing:1.6px;text-transform:uppercase;color:var(--sub);font-weight:800;margin:18px 0 10px}
