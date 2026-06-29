@@ -353,6 +353,39 @@
   .pl-goal{top:50%;width:3%;height:20%;border:2px solid rgba(255,255,255,.4);transform:translateY(-50%)}
   .pl-goal.l{left:-1.6%} .pl-goal.r{right:-1.6%}
   .pl-circle,.pl-box,.pl-goal{background:transparent}
+  /* ---- stadium ---- */
+  .stadium{position:relative;overflow:hidden;border-radius:14px;padding:46px 0 8px;
+    background:linear-gradient(180deg,#0a120d 0%,#0c1811 46%,#070f0a 100%)}
+  .st-crowd{position:absolute;left:0;right:0;top:0;height:46%;
+    background-image:radial-gradient(rgba(255,255,255,.07) 1px,transparent 1.4px);background-size:7px 7px;opacity:.5;
+    -webkit-mask-image:linear-gradient(180deg,#000 0%,transparent 92%);mask-image:linear-gradient(180deg,#000 0%,transparent 92%)}
+  .st-flood{position:absolute;top:-40%;left:50%;width:120%;height:90%;transform:translateX(-50%);pointer-events:none;
+    background:radial-gradient(ellipse at 50% 0%,rgba(120,170,140,.16),transparent 60%)}
+  .st-vig{position:absolute;inset:0;pointer-events:none;box-shadow:inset 0 -40px 70px rgba(0,0,0,.55),inset 0 30px 60px rgba(0,0,0,.4)}
+  .stadium .pitch-wrap{position:relative;z-index:1;padding:6px 6% 0}
+  /* ---- player flash cards (flip) ---- */
+  .fc-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(188px,1fr));gap:14px}
+  .fc{perspective:1100px;height:286px;cursor:pointer}
+  .fc-inner{position:relative;width:100%;height:100%;transition:transform .55s cubic-bezier(.4,.05,.2,1);transform-style:preserve-3d}
+  .fc.flip .fc-inner{transform:rotateY(180deg)}
+  .fc-face{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;border-radius:16px;overflow:hidden;
+    border:1px solid var(--line);background:linear-gradient(180deg,#101d15,#0b1410);display:flex;flex-direction:column}
+  .fc-band{position:relative;height:108px;display:flex;align-items:center;gap:12px;padding:16px;color:var(--bt);
+    background:linear-gradient(135deg,var(--c1),var(--c2))}
+  .fc-rt{display:flex;flex-direction:column;line-height:1}
+  .fc-rt b{font-size:34px;font-weight:800;letter-spacing:-.5px}
+  .fc-rt span{font-size:11px;font-weight:800;letter-spacing:1.4px;margin-top:4px;opacity:.9}
+  .fc-band .ava{margin-left:auto;box-shadow:0 4px 12px rgba(0,0,0,.35)}
+  .fc-name{font-weight:800;font-size:18px;text-align:center;padding:12px 10px 1px}
+  .fc-sub{text-align:center;font-size:9.5px;color:var(--mut);text-transform:uppercase;letter-spacing:1.4px;font-weight:700}
+  .fc-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px 4px;padding:13px 14px 8px;margin-top:auto}
+  .fc-st{text-align:center} .fc-st b{display:block;font-size:16px;font-weight:800} .fc-st span{font-size:8px;letter-spacing:1px;color:var(--mut);font-weight:700}
+  .fc-st.on b{color:var(--c2)} .fc-st.on span{color:var(--c2)}
+  .fc-hint{text-align:center;font-size:8.5px;color:var(--mut);letter-spacing:.8px;padding-bottom:9px}
+  .fc-back{transform:rotateY(180deg);align-items:center;justify-content:flex-start;padding:14px 14px 10px;gap:2px}
+  .fc-back .bk-h{display:flex;align-items:center;gap:8px;width:100%}
+  .fc-back .bk-name{font-weight:800;font-size:15px} .fc-back .bk-rt{margin-left:auto}
+  .fc-back .bk-lvl{width:100%;margin-top:4px}
   .hb3{position:absolute;border-radius:50%;transform:translate(-50%,-50%);filter:blur(7px);mix-blend-mode:screen;pointer-events:none}
   /* ---- compare ---- */
   .cmp-head{display:grid;grid-template-columns:1fr auto 1fr;gap:12px;align-items:start;margin:4px 0 18px}
@@ -498,8 +531,12 @@
     <section id="tab-heat" class="panel on">
       <div class="card">
         <div class="card-h">Occupancy heatmaps</div>
-        <div class="card-s">Where each side spent its time on the pitch · 3D pitch view</div>
-        <div class="pitch-wrap"><div class="pitch3d" id="pitch3d"></div></div>
+        <div class="card-s">Where each side spent its time on the pitch · stadium view</div>
+        <div class="stadium">
+          <div class="st-crowd"></div><div class="st-flood"></div>
+          <div class="pitch-wrap"><div class="pitch3d" id="pitch3d"></div></div>
+          <div class="st-vig"></div>
+        </div>
         <div class="heat-leg">
           <span><i style="background:linear-gradient(90deg,transparent,var(--blue))"></i>BLUE occupancy</span>
           <span><i style="background:linear-gradient(90deg,transparent,var(--yel))"></i>YEL occupancy</span>
@@ -539,7 +576,7 @@
           </div>
         </div>
         <div class="seg" id="fa-seg"><div class="seg-ind" id="fa-ind"></div></div>
-        <div class="fa-grid" id="fa-grid"></div>
+        <div class="fc-grid" id="fa-grid"></div>
       </div>
     </section>
 
@@ -872,26 +909,40 @@ function renderPlayers(){
     seg.querySelectorAll('.seg-btn').forEach(x=>x.classList.toggle('on',x===btn));
     ind.style.left=btn.offsetLeft+'px'; ind.style.width=btn.offsetWidth+'px';
   }
+  const HL={dist:'DIS',top:'SPD',made:'PAS',poss:'POS'};
   function drawCards(){
     const grid=document.getElementById('fa-grid');
-    const meta=MATCH.faMetrics.find(m=>m[0]===faActive);
-    const unit=meta[2], label=meta[1];
+    const hl=HL[faActive];
     const sorted=[...P].sort((a,b)=>b[faActive]-a[faActive]);
     grid.innerHTML='';
     sorted.forEach((p,idx)=>{
-      const card=document.createElement('div'); card.className='pc'; card.style.setProperty('--ac',COL[p.team]);
-      card.style.animationDelay=(idx*0.04)+'s';
-      const r = rating(p);
+      const c1=p.team==='BLUE'?'#1e5fd6':'#ffc94d', c2=p.team==='BLUE'?'#4f93ff':'#f5a623', bt=p.team==='BLUE'?'#fff':'#1a1205';
+      const r=rating(p), lv=levelOf(p);
+      const stats=[['DIS',Math.round(p.dist)],['SPD',p.top.toFixed(1)],['PAS',p.made],['POS',p.poss.toFixed(1)],['TCH',p.touches],['SPR',p.sprint.toFixed(1)]];
+      const statsHtml=stats.map(([lab,val])=>`<div class="fc-st${lab===hl?' on':''}"><b>${val}</b><span>${lab}</span></div>`).join('');
+      const card=document.createElement('div'); card.className='fc'; card.style.animationDelay=(idx*0.04)+'s';
+      card.style.setProperty('--c1',c1); card.style.setProperty('--c2',c2); card.style.setProperty('--bt',bt);
       card.innerHTML =
-        `<div class="pc-rate rate ${ratingTier(r)}" title="Match rating">${r.toFixed(1)}</div>`+
-        `<div class="pc-top">${avatar(p,34)}<span class="pc-id"><span class="pc-name">${p.id}</span><span class="pc-pos">${ppos(p)} · #${pnum(p)}</span></span><span class="pc-min">${p.mins} min</span></div>`+
-        `<div class="pc-feat"><span class="pc-big num">0</span><span class="pc-unit">${unit}</span><span class="pc-flab">${label}</span></div>`+
-        `<div class="pc-radar"><span class="pc-ring"></span>${radarSVG(p,faActive,132)}</div>`;
+        `<div class="fc-inner">`+
+          `<div class="fc-face fc-front">`+
+            `<div class="fc-band"><div class="fc-rt"><b>${r.toFixed(1)}</b><span>${ppos(p)}</span></div>${avatar(p,60)}</div>`+
+            `<div class="fc-name">${p.id}</div>`+
+            `<div class="fc-sub">${p.team} · #${pnum(p)} · Lv ${lv.level}</div>`+
+            `<div class="fc-stats">${statsHtml}</div>`+
+            `<div class="fc-hint">tap to flip ⟳</div>`+
+          `</div>`+
+          `<div class="fc-face fc-back">`+
+            `<div class="bk-h">${avatar(p,28)}<span class="bk-name">${p.id}</span><span class="bk-rt rate ${ratingTier(r)}">${r.toFixed(1)}</span></div>`+
+            radarSVG(p,faActive,150)+
+            `<div class="bk-lvl"><div class="lvl"><span class="lvl-badge">Lv ${lv.level}</span><div class="lvl-bar"><div class="lvl-fill" style="width:${lv.pct}%"></div></div><span class="lvl-xp">${xpOf(p)} XP</span></div></div>`+
+          `</div>`+
+        `</div>`;
       grid.appendChild(card);
-      const dec = unit==='m/s' || (p[faActive]%1!==0);
-      countUp(card.querySelector('.pc-big'), p[faActive], 650, dec);
     });
   }
+  // flip on click (delegated, set once)
+  const grid0=document.getElementById('fa-grid');
+  grid0.onclick=e=>{ const c=e.target.closest('.fc'); if(c) c.classList.toggle('flip'); };
   // initial indicator placement after layout
   requestAnimationFrame(()=>{ const on=seg.querySelector('.seg-btn.on'); if(on) moveInd(on); });
   drawCards();

@@ -27,18 +27,23 @@ export default function Heatmap(_props: { active?: boolean }) {
     <div className="panel">
       <div className="card">
         <div className="card-h">Occupancy heatmaps</div>
-        <div className="card-s">Where each side spent its time on the pitch · 3D pitch view</div>
-        <div className="pitch-wrap">
-          <div className="pitch3d">
-            <span className="pl-line pl-mid" />
-            <span className="pl-line pl-circle" />
-            <span className="pl-line pl-spot" />
-            <span className="pl-line pl-box l" />
-            <span className="pl-line pl-box r" />
-            <span className="pl-line pl-goal l" />
-            <span className="pl-line pl-goal r" />
-            {blobs}
+        <div className="card-s">Where each side spent its time on the pitch · stadium view</div>
+        <div className="stadium">
+          <div className="st-crowd" />
+          <div className="st-flood" />
+          <div className="pitch-wrap">
+            <div className="pitch3d">
+              <span className="pl-line pl-mid" />
+              <span className="pl-line pl-circle" />
+              <span className="pl-line pl-spot" />
+              <span className="pl-line pl-box l" />
+              <span className="pl-line pl-box r" />
+              <span className="pl-line pl-goal l" />
+              <span className="pl-line pl-goal r" />
+              {blobs}
+            </div>
           </div>
+          <div className="st-vig" />
         </div>
         <div className="heat-leg">
           <span><i style={{ background: 'linear-gradient(90deg,transparent,var(--blue))' } as CSSProperties} />BLUE occupancy</span>

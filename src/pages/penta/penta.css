@@ -390,3 +390,38 @@
 .penta-root .cmp-fill.r{margin-left:auto}
 .penta-root .cmp-leg{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:700}
 .penta-root .cmp-leg i{width:9px;height:9px;border-radius:50%}
+
+/* ---- stadium ---- */
+.penta-root .stadium{position:relative;overflow:hidden;border-radius:14px;padding:46px 0 8px;
+  background:linear-gradient(180deg,#0a120d 0%,#0c1811 46%,#070f0a 100%)}
+.penta-root .st-crowd{position:absolute;left:0;right:0;top:0;height:46%;
+  background-image:radial-gradient(rgba(255,255,255,.07) 1px,transparent 1.4px);background-size:7px 7px;opacity:.5;
+  -webkit-mask-image:linear-gradient(180deg,#000 0%,transparent 92%);mask-image:linear-gradient(180deg,#000 0%,transparent 92%)}
+.penta-root .st-flood{position:absolute;top:-40%;left:50%;width:120%;height:90%;transform:translateX(-50%);pointer-events:none;
+  background:radial-gradient(ellipse at 50% 0%,rgba(120,170,140,.16),transparent 60%)}
+.penta-root .st-vig{position:absolute;inset:0;pointer-events:none;box-shadow:inset 0 -40px 70px rgba(0,0,0,.55),inset 0 30px 60px rgba(0,0,0,.4)}
+.penta-root .stadium .pitch-wrap{position:relative;z-index:1;padding:6px 6% 0}
+
+/* ---- player flash cards (flip) ---- */
+.penta-root .fc-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(188px,1fr));gap:14px}
+.penta-root .fc{perspective:1100px;height:286px;cursor:pointer}
+.penta-root .fc-inner{position:relative;width:100%;height:100%;transition:transform .55s cubic-bezier(.4,.05,.2,1);transform-style:preserve-3d}
+.penta-root .fc.flip .fc-inner{transform:rotateY(180deg)}
+.penta-root .fc-face{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;border-radius:16px;overflow:hidden;
+  border:1px solid var(--line);background:linear-gradient(180deg,#101d15,#0b1410);display:flex;flex-direction:column}
+.penta-root .fc-band{position:relative;height:108px;display:flex;align-items:center;gap:12px;padding:16px;color:var(--bt);
+  background:linear-gradient(135deg,var(--c1),var(--c2))}
+.penta-root .fc-rt{display:flex;flex-direction:column;line-height:1}
+.penta-root .fc-rt b{font-size:34px;font-weight:800;letter-spacing:-.5px}
+.penta-root .fc-rt span{font-size:11px;font-weight:800;letter-spacing:1.4px;margin-top:4px;opacity:.9}
+.penta-root .fc-band .ava{margin-left:auto;box-shadow:0 4px 12px rgba(0,0,0,.35)}
+.penta-root .fc-name{font-weight:800;font-size:18px;text-align:center;padding:12px 10px 1px}
+.penta-root .fc-sub{text-align:center;font-size:9.5px;color:var(--mut);text-transform:uppercase;letter-spacing:1.4px;font-weight:700}
+.penta-root .fc-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px 4px;padding:13px 14px 8px;margin-top:auto}
+.penta-root .fc-st{text-align:center} .penta-root .fc-st b{display:block;font-size:16px;font-weight:800} .penta-root .fc-st span{font-size:8px;letter-spacing:1px;color:var(--mut);font-weight:700}
+.penta-root .fc-st.on b{color:var(--c2)} .penta-root .fc-st.on span{color:var(--c2)}
+.penta-root .fc-hint{text-align:center;font-size:8.5px;color:var(--mut);letter-spacing:.8px;padding-bottom:9px}
+.penta-root .fc-back{transform:rotateY(180deg);align-items:center;justify-content:flex-start;padding:14px 14px 10px;gap:2px}
+.penta-root .fc-back .bk-h{display:flex;align-items:center;gap:8px;width:100%}
+.penta-root .fc-back .bk-name{font-weight:800;font-size:15px} .penta-root .fc-back .bk-rt{margin-left:auto}
+.penta-root .fc-back .bk-lvl{width:100%;margin-top:4px}
