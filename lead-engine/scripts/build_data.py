@@ -23,9 +23,11 @@ if raw:
     leads = []
     for l in raw:
         p = parse_notes.parse(l.get("notes", ""))
+        # parsed note values fill gaps; fields the skill already wrote (titles, readiness, ...) are kept when the note lacks them
         l.update({"titles": [p["job_title"]] if p.get("job_title") else l.get("titles", []), "company": p.get("company") or l.get("company", ""),
-                  "linkedin": p.get("linkedin", ""), "years_exp": p.get("years_exp", l.get("years_exp", "")), "payment_pref": p.get("payment_pref_norm", ""),
-                  "readiness": p.get("readiness", ""), "forms": max(int(l.get("forms") or 1), 2 if p["submitted_again"] else 1),
+                  "linkedin": p.get("linkedin") or l.get("linkedin", ""), "years_exp": p.get("years_exp") or l.get("years_exp", ""),
+                  "payment_pref": p.get("payment_pref_norm") or l.get("payment_pref", ""),
+                  "readiness": p.get("readiness") or l.get("readiness", ""), "forms": max(int(l.get("forms") or 1), 2 if p["submitted_again"] else 1),
                   "won": (l.get("stage") or "").lower() == "won", "paid_before": l.get("paid_before", False)})
         leads.append(l)
     inp = d / "leads_scored_input.json"; json.dump(leads, open(inp, "w", encoding="utf-8"), indent=1, ensure_ascii=False)

@@ -20,6 +20,10 @@ def test_triage_state_filter():
     assert json.load(open(out + "/contact_us_summary.json"))["rows"] == 61   # 58 untouched + 3 handled rows
     out = tempfile.mkdtemp(); S(R/"scripts/triage.py", "--csv", GOLDEN_CSV, "--since", "2026-10-03T00:00:00Z", "--out", out)
     assert {r["date"][:10] for r in rows(out + "/contact_us.csv")} <= {"2026-10-03", "2026-10-04", "2026-10-05"}
+def test_triage_missed_callback():   # broken callback promise = urgent customer action, in either language
+    import triage
+    for m in ("تم الاتفاق على التواصل اليوم التالى تليفونيا ولم يتم التواصل حتى الان", "Your colleague promised a call back but no one called"):
+        assert triage.classify(m, "x", "a@gmail.com")[0] == "existing_customer_action", m
 def test_parse_notes():
     import parse_notes as p
     r = p.parse("LinkedIn: https://linkedin.com/in/x\nYears of experience: 10+ years\nPayment preference: Full payment\nWave: Upcoming wave\nSubmitted again")
@@ -71,6 +75,12 @@ def test_build_data_end_to_end():
     for h in ("URGENT FLAGS", "Priority list", "High-Profile Library", "Quality", "B2B / partnership", "Enrichment list"): assert h in html
     pr = rows(d/"priority.csv"); assert [p["name"] for p in pr] == ["Lina Fouad", "Hesham Ragab"] and pr[1]["tier"] == "D"
     assert S(*args, cwd=work).returncode == 0 and json.load(open(pathlib.Path(work, "out/state.json")))["leads"]["900103"]["seen_runs"] == 2
+def test_build_data_keeps_existing_fields():   # browser-read leads arrive with readiness/payment already set and no notes
+    work = tempfile.mkdtemp(); d = pathlib.Path(work, "run")
+    assert S(R/"scripts/build_data.py", "--odoo-json", R/"tests/pilot_leads.json", "--outdir", d, cwd=work).returncode == 0
+    want = rows(d/"priority.csv")
+    out = tempfile.mkdtemp(); S(R/"scripts/score.py", "--in", R/"tests/pilot_leads.json", "--out", out)
+    assert [(r["name"], r["total"]) for r in want] == [(r["name"], r["total"]) for r in rows(out + "/priority.csv")]
 def test_build_data_without_odoo():
     work = tempfile.mkdtemp(); d = pathlib.Path(work, "run")
     r = S(R/"scripts/build_data.py", "--contact-csv", GOLDEN_CSV, "--outdir", d, cwd=work)

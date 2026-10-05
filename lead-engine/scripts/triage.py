@@ -11,7 +11,7 @@ FREE = set("gmail.com yahoo.com hotmail.com outlook.com icloud.com live.com ymai
 KW = {
  "complaint": r"complain|unprofessional|disrespect|شكوى|شكوي|سيء|refund|استرداد",
  "leak": r"competitor|منافس|reselling|resell|بيع الكورس|leak|مسرب",
- "customer_action": r"already paid|i paid|paid the|دفعت|دفعنا|تحويل|switch|change my|upgrade|receipt|إيصال|ايصال|no one contacted",
+ "customer_action": r"already paid|i paid|paid the|دفعت|دفعنا|تحويل|switch|change my|upgrade|receipt|إيصال|ايصال|no one contacted|nobody contacted|no one called|لم يتم التواصل|لم يتواصل|محدش كلمني|محدش اتصل|ماحدش كلمني",
  "corporate": r"employees|our team|my team|team members|(?<!your )company|corporate|for my company|staff|department|workforce|workflow|financial analysis|we.re looking to|our business|our sales|"
               r"proposal|quotation|quote|training for|group training|training session|upskill|"
               r"موظفين|الموظفين|شركة|شركتنا|شركتي|مجموعه|مجموعة|فريق|عرض سعر|تدريب لمجموع",
