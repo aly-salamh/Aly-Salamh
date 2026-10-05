@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": ["Bash(python3 scripts/*)", "Read", "Write(out/**)", "mcp__Gmail__search_threads", "mcp__Gmail__get_message", "mcp__Gmail__get_thread",
+      "mcp__Google_Drive__search_files", "mcp__Google_Drive__download_file_content", "mcp__Google_Drive__create_file", "mcp__Google_Drive__list_recent_files",
+      "mcp__Apollo_io__apollo_people_match"],
+    "deny": ["Read(.env)", "mcp__Gmail__send_message", "mcp__Gmail__reply", "mcp__Gmail__forward", "mcp__Gmail__trash_message", "mcp__Google_Drive__trash_file", "mcp__Apollo_io__apollo_emailer_messages_send_now"]
+  }
+}

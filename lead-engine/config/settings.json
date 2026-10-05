@@ -1,0 +1,30 @@
+{
+  "_ids": "Sheet/Drive IDs are kept out of git: put them in config/local.json (copy config/local.example.json). Values there override this file.",
+  "owner": "Aly Salamah",
+  "timezone": "Africa/Cairo",
+  "odoo_url": "https://meska.odoo.com",
+  "contact_sheet_id": "",
+  "drive_account": "alysalama@meska.ai",
+  "drive_folder_q4_2026": "",
+  "gmail_alert_sender": "notifications@meska.ai",
+  "programs": [
+    "AI Copilot Diploma (offline)",
+    "AI Copilot Diploma (online)",
+    "Claude Build Your First Agent",
+    "Microsoft",
+    "AI For HR"
+  ],
+  "schedule": {
+    "start_of_day": "30 8 * * 0-4",
+    "end_of_day": "30 17 * * 0-4",
+    "start_of_week": "30 8 * * 0",
+    "end_of_week": "30 17 * * 4"
+  },
+  "quality_definitions": {
+    "big_deal": "tier A, or expected price >= 20000 EGP",
+    "b2b": "tier A",
+    "high_profile": "seniority points >= 26",
+    "high_company": "company points >= 16 (1000+ employees) or academic institution",
+    "opposite": "tier D or no_title+no_company"
+  }
+}

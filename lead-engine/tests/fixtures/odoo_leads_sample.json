@@ -1,0 +1,24 @@
+[
+ {
+  "id": 900103,
+  "name": "Lina Fouad",
+  "stage": "Interested",
+  "email": "lina.fouad@globalcx.example",
+  "phone": "",
+  "price": 25000,
+  "created": "2026-10-01",
+  "company": "Global CX Group",
+  "notes": "LinkedIn: https://linkedin.com/in/example-lina\nJob title: Group Head of FP&A\nYears of experience: 10+ years\nPayment preference: Full\nWave: Upcoming\nSubmitted again"
+ },
+ {
+  "id": 900108,
+  "name": "Hesham Ragab",
+  "stage": "New B2C",
+  "email": "",
+  "phone": "",
+  "price": 0,
+  "created": "2026-10-04",
+  "company": "",
+  "notes": "Years of experience: 0-2 years"
+ }
+]
