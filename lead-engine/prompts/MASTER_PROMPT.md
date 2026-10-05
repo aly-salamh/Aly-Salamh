@@ -3,7 +3,7 @@
 **Context:** Odoo CRM leads (B2C now, B2B later) assigned by Youssef Al Refaey + website Contact-Us sheet. Programs: AI Copilot Diploma (offline/online), Claude, Microsoft, AI For HR. See config/settings.json.
 **Task:** tell Aly who to call, in what order, what to say, and how his day/week and lead quality look.
 **Inputs:** Gmail alerts, Odoo (API -> CSV -> browser), Contact-Us sheet, Apollo/LinkedIn (enrichment only), out/state.json.
-**Constraints:** read-only; drafts only, signed Aly Salamah; never print secrets or Apollo contact data; verify before reporting; small samples flagged.
+**Constraints:** read-only (except mode apply-actions: only the dashboard's queued changes); drafts only, signed Aly Salamah; never print secrets or Apollo contact data; verify before reporting; small samples flagged.
 **Output:** `out/DATE/report_<mode>.html` -> Drive doc `NN - Lead Engine Run - YYYY-MM-DD (<mode>)` in the quarter folder; chat reply = top actions + urgent flags + quality % + link.
 **Discipline (every run):**
 1. State what is about to run (one line). Create the task list.

@@ -3,7 +3,7 @@ Read first: prompts/MASTER_PROMPT.md. Skill: /meska-lead-engine [mode]. Modes: p
 ## Layout
 scripts/ deterministic code (odoo_pull, fetch_sheet, triage, parse_notes, match, enrich, score, quality, state, report, build_data, check_report, run.sh, schedule.sh) | config/settings.json + config/local.json (sheet/folder ids, git-ignored) | templates/ (WhatsApp AR/EN) | tests/ | samples/ | out/DATE/ (generated, git-ignored)
 ## Rules
-Read-only in Odoo and the Contact-Us sheet. Never send/reply/forward (denied in .claude/settings.json). Drafts signed "Aly Salamah". Never print or read .env. No Apollo email/phone reveals. Verify numbers (check_report.py) before reporting.
+Read-only in Odoo and the Contact-Us sheet, except mode apply-actions (only changes Aly queued in the dashboard). Claude never sends/replies/forwards (denied in .claude/settings.json); emails go out only when Aly presses Send now in the dashboard. Drafts signed "Aly Salamah". Never print or read .env. No Apollo email/phone reveals. Verify numbers (check_report.py) before reporting.
 ## Workarounds (state the one used, one line)
 Odoo API fails -> Odoo list export CSV (`odoo_pull.py --from-csv`) -> browser read, write out/DATE/odoo_leads.json. Sheet fetch 401 -> Drive download_file_content text/csv or manual CSV. Apollo fails -> LinkedIn, else PENDING. Gmail empty -> Odoo overdue activities. Drive write fails -> keep out/DATE/report_*.html and attach. No claude CLI -> run.sh still runs every script step and writes the report (offline).
 ## Commands

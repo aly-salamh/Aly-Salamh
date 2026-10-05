@@ -19,6 +19,7 @@ Aly types `/meska-lead-engine` (optionally with a mode) or says "run lead engine
 - `enrich`: steps 4 and 7-9 for incomplete leads.
 - `library`: paid-leads high-profile library.
 - `lead <name or Odoo ID>`: one-lead deep dive.
+- `apply-actions`: apply the changes Aly queued in the Lead Engine Dashboard (see prompts/modes/apply-actions.md). The only mode that writes to Odoo or the sheet.
 
 ## Run sequence (run-all). Each step feeds the next; do not skip ahead.
 1. **Collect lead IDs.** Gmail (alysalama@meska.ai): search alerts from notifications@meska.ai (`assigned to you`) since the last report (check the newest doc in the Drive folder for the last run date). Extract the Odoo res_id from the redirect link. Add leads from Odoo's overdue Activities list. De-duplicate (one lead can have several alerts = repeat forms).
@@ -71,7 +72,7 @@ In chat: give the top actions only (who to call first and why, plus anything urg
 - Conflicting data (experience years, company field that just repeats the name).
 
 ## Rules
-- Read-only in Odoo and the sheet. No creating/editing leads, no marking activities done.
+- Read-only in Odoo and the sheet in every mode except `apply-actions`, which applies only the changes Aly queued in the dashboard, one by one, nothing else. Never create or delete leads.
 - Never send messages. WhatsApp/email text is draft only, for Aly to review. Sign as **Aly Salamah** (not Mario) in all outreach. Write Arabic drafts in natural Egyptian business Arabic, English drafts in plain direct English.
 - Personal data (phones, emails) stays in Odoo/Drive docs; do not paste it elsewhere.
 - Do not reveal Apollo emails/phones. Use only LinkedIn URL matching.
