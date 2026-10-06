@@ -24,6 +24,9 @@ def test_triage_missed_callback():   # broken callback promise = urgent customer
     import triage
     for m in ("تم الاتفاق على التواصل اليوم التالى تليفونيا ولم يتم التواصل حتى الان", "Your colleague promised a call back but no one called"):
         assert triage.classify(m, "x", "a@gmail.com")[0] == "existing_customer_action", m
+def test_triage_wave_question():   # asking when a wave starts is a B2C inquiry, not junk
+    import triage
+    assert triage.classify("kindly inform with the approximate period of Wave 17, thanks.", "x", "a@gmail.com")[0] == "b2c_inquiry"
 def test_parse_notes():
     import parse_notes as p
     r = p.parse("LinkedIn: https://linkedin.com/in/x\nYears of experience: 10+ years\nPayment preference: Full payment\nWave: Upcoming wave\nSubmitted again")

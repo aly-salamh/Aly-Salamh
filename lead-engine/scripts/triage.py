@@ -21,7 +21,7 @@ KW = {
  "job": r"job opening|job|vacanc|\bcv\b|resume|internship|فرصة عمل|وظيفة|التقديم على وظيفة|looking to join (?:your|the) team|contribute to your team|third-year|student at|computer science student|seeking (?:an )?opportunit|my skills",
  "b2c": r"co ?tact|diploma|course|program|دبلوم|كورس|دورة|learn|تعلم|price|سعر|cost|تكلفة|details|تفاصيل|"
         r"offline|online|اونلاين|اوفلاين|certificate|claude|copilot|ai\b|schedule|start|call me|call|contact|"
-        r"تواصل|اتصال|واتساب|whatsapp|connect|information|more info|معلومات|منح|scholarship",
+        r"تواصل|اتصال|واتساب|whatsapp|connect|information|more info|معلومات|منح|scholarship|\bwave\b|ويف|الدفعة|موعد",
 }
 JUNK_NAME = re.compile(r"^[\W\d_]*$")
 
