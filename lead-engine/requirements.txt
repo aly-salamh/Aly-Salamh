@@ -1,0 +1,2 @@
+# stdlib only; pytest optional for tests
+pytest>=7

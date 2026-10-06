@@ -1,0 +1,13 @@
+{
+  "rows": 58,
+  "by_type": {
+    "existing_customer_action": 1,
+    "complaint_or_report": 2,
+    "corporate_training": 10,
+    "partnership": 5,
+    "b2c_corporate_domain": 1,
+    "b2c_inquiry": 24,
+    "job_seeker": 2,
+    "junk_or_unclear": 13
+  }
+}
